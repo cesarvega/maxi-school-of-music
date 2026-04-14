@@ -12,7 +12,7 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Maxi School Of Music">
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Dancing+Script:wght@500;700&display=swap');
     *{margin:0;padding:0;box-sizing:border-box}
 
     /* ===== THEME SYSTEM (CSS Variables) ===== */
@@ -178,6 +178,35 @@
     .lang-btn:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)}
     .lang-btn.active{border-color:var(--accent);background:rgba(255,255,255,.06)}
     .lang-btn .flag{font-size:20px}
+
+    /* DEDICATION */
+    .dedication{
+      text-align:center;padding:20px 10px 10px;
+    }
+    .dedication-icon{font-size:36px;margin-bottom:10px}
+    .dedication-text{
+      font-family:'Dancing Script',cursive;
+      font-size:18px;color:rgba(255,255,255,.5);
+      line-height:1.4;margin-bottom:4px;
+    }
+    .dedication-name{
+      font-family:'Dancing Script',cursive;
+      font-size:clamp(32px,8vw,42px);font-weight:700;
+      background:var(--title-grad);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;
+      line-height:1.2;margin-bottom:8px;
+    }
+    .dedication-sub{
+      font-family:'Dancing Script',cursive;
+      font-size:15px;color:rgba(255,255,255,.35);
+      line-height:1.4;font-style:italic;
+      max-width:240px;margin:0 auto 10px;
+    }
+    .dedication-from{
+      font-family:'Dancing Script',cursive;
+      font-size:16px;color:var(--accent);opacity:.7;
+    }
     .theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
     .theme-btn{
       font-family:'Fredoka',sans-serif;
@@ -640,6 +669,14 @@
       <button class="lang-btn" data-lang="fr"><span class="flag">&#127467;&#127479;</span>Francais</button>
       <button class="lang-btn" data-lang="it"><span class="flag">&#127470;&#127481;</span>Italiano</button>
       <button class="lang-btn" data-lang="pt"><span class="flag">&#127463;&#127479;</span>Portugues</button>
+    </div>
+    <div class="divider"></div>
+    <div class="dedication">
+      <div class="dedication-icon">&#129430;&#10084;&#65039;</div>
+      <p class="dedication-text">This app was made with all my love for my son</p>
+      <p class="dedication-name">Maximiliano</p>
+      <p class="dedication-sub">May your life always be filled with music, adventure, and dinosaurs.</p>
+      <p class="dedication-from">&#8212; Dad</p>
     </div>
   </div>
 
