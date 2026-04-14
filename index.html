@@ -482,8 +482,9 @@
     }
     .hud-item{display:flex;align-items:center;gap:6px;font-weight:700;font-size:clamp(14px,3.5vw,18px);color:var(--accent2)}
     .hud-item span:first-child{font-size:clamp(18px,4vw,22px)}
+    .canvas-box{position:relative;max-width:600px;margin:0 auto}
     #game-canvas{
-      display:block;width:100%;max-width:600px;height:auto;aspect-ratio:3/1;
+      display:block;width:100%;height:auto;aspect-ratio:3/1;
       border-radius:16px;background:linear-gradient(180deg,#7dd3fc 0%,#bae6fd 60%,#fef3c7 100%);
       border:3px solid var(--accent-dark);
       box-shadow:0 8px 30px rgba(0,0,0,.4);
@@ -504,15 +505,16 @@
     .game-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--active-shadow);border-bottom-width:1px}
     #game-jump{flex:2;max-width:180px}
     .game-overlay{
-      position:absolute;top:48px;left:0;right:0;bottom:56px;
+      position:absolute;top:0;left:0;right:0;bottom:0;
       display:flex;align-items:center;justify-content:center;
-      background:rgba(0,0,0,.7);backdrop-filter:blur(4px);
+      background:rgba(0,0,0,.65);backdrop-filter:blur(4px);
       border-radius:16px;z-index:5;
     }
     .game-overlay.hidden{display:none}
-    .game-msg{text-align:center;padding:20px;max-width:300px}
-    .game-msg h3{font-size:clamp(1.4rem,5vw,2rem);color:var(--accent);margin-bottom:8px}
-    .game-msg p{color:var(--text-muted);margin-bottom:18px;font-size:clamp(.85rem,3vw,1rem)}
+    .game-msg{text-align:center;padding:12px;max-width:280px}
+    .game-msg h3{font-size:clamp(1rem,4vw,1.5rem);color:#facc15;margin-bottom:4px;text-shadow:0 2px 4px rgba(0,0,0,.5)}
+    .game-msg p{color:#fff;margin-bottom:10px;font-size:clamp(.7rem,2.5vw,.9rem);text-shadow:0 1px 2px rgba(0,0,0,.5)}
+    .game-msg .btn-3d{padding:8px 22px;font-size:clamp(13px,3.5vw,16px)}
 
     /* Play game button in hero */
     .play-game-btn{
@@ -1018,16 +1020,18 @@
           <div class="hud-item"><span>&#127942;</span><span id="game-score">0</span></div>
           <div class="hud-item"><span>&#128293;</span><span id="game-best">0</span></div>
         </div>
-        <canvas id="game-canvas" width="600" height="200"></canvas>
+        <div class="canvas-box">
+          <canvas id="game-canvas" width="600" height="200"></canvas>
+          <div class="game-overlay" id="game-overlay">
+            <div class="game-msg">
+              <h3 id="game-msg-title" data-i18n="gamePlay">&#129430; Dino Runner</h3>
+              <p id="game-msg-sub" data-i18n="gameInstr">Toca SALTAR o la pantalla para brincar!</p>
+              <button class="btn-3d lava" id="game-start" data-i18n="gameStart">JUGAR</button>
+            </div>
+          </div>
+        </div>
         <div class="game-controls">
           <button class="game-btn" id="game-jump" data-i18n="gameJump">SALTAR</button>
-        </div>
-        <div class="game-overlay" id="game-overlay">
-          <div class="game-msg">
-            <h3 id="game-msg-title" data-i18n="gamePlay">&#129430; Dino Runner</h3>
-            <p id="game-msg-sub" data-i18n="gameInstr">Usa las flechas o desliza. Toca SALTAR para brincar.</p>
-            <button class="btn-3d lava" id="game-start" data-i18n="gameStart">JUGAR</button>
-          </div>
         </div>
       </div>
     </div>
