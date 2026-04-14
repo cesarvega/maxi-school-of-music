@@ -176,7 +176,8 @@
     .theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
     .theme-btn{
       font-family:'Fredoka',sans-serif;
-      padding:14px 10px;border-radius:16px;border:2px solid rgba(255,255,255,.08);
+      padding:12px 10px;border-radius:14px;border:2px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.04);
       cursor:pointer;text-align:center;transition:all .2s ease;
       font-size:13px;font-weight:600;color:#fff;position:relative;
     }
@@ -185,7 +186,7 @@
     .theme-btn .theme-preview{
       display:flex;gap:4px;justify-content:center;margin-bottom:8px;
     }
-    .theme-btn .theme-dot{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.15)}
+    .theme-btn .theme-dot{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.15)}
     .theme-btn .check{
       position:absolute;top:8px;right:8px;width:20px;height:20px;
       background:var(--accent);border-radius:50%;display:none;
@@ -335,6 +336,98 @@
     .roar-text{position:fixed;z-index:30;font-size:clamp(2.5rem,8vw,4rem);font-weight:700;color:#fb923c;pointer-events:none;animation:roarA 1s forwards;text-shadow:0 4px 20px rgba(251,146,60,.5)}
     @keyframes roarA{0%{transform:scale(.5) rotate(-10deg);opacity:1}100%{transform:scale(2) rotate(5deg) translateY(-80px);opacity:0}}
     @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px) rotate(-1deg)}40%{transform:translateX(6px) rotate(1deg)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+
+    /* ===== BOOKING CALENDAR ===== */
+    .cal-wrap{max-width:900px;margin:0 auto}
+    .cal-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;gap:10px;flex-wrap:wrap}
+    .cal-header h3{font-size:clamp(1.2rem,4vw,1.6rem);color:var(--accent);text-align:center;flex:1}
+    .cal-nav{
+      font-family:'Fredoka',sans-serif;
+      width:44px;height:44px;border-radius:12px;border:none;
+      border-bottom:3px solid var(--btn-shadow);cursor:pointer;
+      background:linear-gradient(180deg,var(--btn-top),var(--btn-bot));color:var(--btn-text);
+      font-size:20px;font-weight:700;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 3px 0 var(--btn-shadow),0 4px 8px rgba(0,0,0,.3);
+      transition:all .15s ease;flex-shrink:0;
+    }
+    .cal-nav:hover{transform:translateY(-2px);box-shadow:0 5px 0 var(--btn-shadow),0 6px 12px rgba(0,0,0,.4)}
+    .cal-nav:active{transform:translateY(2px);box-shadow:0 1px 0 var(--btn-shadow),0 2px 4px rgba(0,0,0,.3);border-bottom-width:1px}
+    .cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px;text-align:center}
+    .cal-weekdays span{font-size:clamp(11px,2.5vw,13px);color:var(--text-muted);font-weight:600;padding:6px 0}
+    .cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
+    .cal-day{
+      aspect-ratio:1;border-radius:14px;border:2px solid transparent;
+      background:rgba(255,255,255,.03);cursor:pointer;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      font-size:clamp(14px,3vw,18px);font-weight:600;color:#fff;
+      transition:all .2s ease;position:relative;gap:2px;
+    }
+    .cal-day:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.1)}
+    .cal-day.today{border-color:var(--accent);background:rgba(255,255,255,.06)}
+    .cal-day.has-slots::after{content:'';position:absolute;bottom:6px;width:6px;height:6px;border-radius:50%;background:var(--accent3, #4ade80)}
+    .cal-day.has-bookings::after{background:var(--accent);width:8px;height:8px}
+    .cal-day.empty{background:transparent;cursor:default;opacity:.15}
+    .cal-day.past{opacity:.3;cursor:default}
+    .cal-day.selected{background:var(--active-glow);border-color:var(--accent);transform:scale(1.05)}
+
+    /* Day detail / time slots panel */
+    .slot-overlay{
+      position:fixed;top:0;left:0;right:0;bottom:0;z-index:60;
+      background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+      display:none;align-items:center;justify-content:center;padding:16px;
+    }
+    .slot-overlay.open{display:flex}
+    .slot-panel{
+      background:var(--bg);border:2px solid rgba(255,255,255,.08);
+      border-radius:24px;padding:24px 16px;width:min(500px,95vw);
+      max-height:90vh;overflow-y:auto;position:relative;
+    }
+    .slot-panel-close{
+      position:absolute;top:12px;right:12px;width:36px;height:36px;
+      border-radius:50%;border:none;background:rgba(255,255,255,.08);
+      color:#fff;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      transition:background .2s;
+    }
+    .slot-panel-close:hover{background:rgba(255,255,255,.15)}
+    .slot-panel h3{font-size:1.3rem;color:var(--accent);margin-bottom:4px;padding-right:40px}
+    .slot-panel .slot-date{font-size:.85rem;color:var(--text-muted);margin-bottom:18px}
+    .time-slots{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:18px}
+    @media(min-width:400px){.time-slots{grid-template-columns:repeat(3,1fr)}}
+    .time-slot{
+      font-family:'Fredoka',sans-serif;
+      padding:12px 8px;border-radius:12px;border:2px solid rgba(255,255,255,.08);
+      background:rgba(255,255,255,.03);color:#fff;cursor:pointer;
+      text-align:center;font-size:14px;font-weight:600;transition:all .2s;
+    }
+    .time-slot:hover{background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.15)}
+    .time-slot.selected{border-color:var(--accent);background:var(--active-glow)}
+    .time-slot.booked{
+      background:rgba(255,255,255,.04);border-color:rgba(255,255,255,.06);
+      color:var(--text-muted);cursor:default;opacity:.5;text-decoration:line-through;
+    }
+    .time-slot .slot-who{font-size:10px;color:var(--accent);display:block;margin-top:2px;text-decoration:none}
+
+    /* Booking form inside slot panel */
+    .book-form{display:none;flex-direction:column;gap:10px;margin-top:12px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
+    .book-form.open{display:flex}
+    .book-form input,.book-form select{
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);
+      border-radius:12px;padding:11px 14px;color:#fff;font-size:14px;font-family:inherit;outline:none;
+      transition:border-color .3s;width:100%;
+    }
+    .book-form input:focus,.book-form select:focus{border-color:var(--active-glow)}
+    .book-form select{appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23888' fill='none' stroke-width='2'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center}
+    .book-form select option{background:#1a1208;color:#fff}
+
+    /* Booking confirmation toast */
+    .book-toast{
+      position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(100px);
+      background:var(--accent);color:#000;font-family:'Fredoka',sans-serif;
+      padding:14px 28px;border-radius:16px;font-weight:700;font-size:15px;z-index:70;
+      box-shadow:0 8px 30px rgba(0,0,0,.4);opacity:0;transition:all .4s cubic-bezier(.34,1.56,.64,1);
+      pointer-events:none;white-space:nowrap;
+    }
+    .book-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
   </style>
 </head>
 <body>
@@ -345,6 +438,7 @@
     <button data-page="classes" data-i18n="navClasses">Clases</button>
     <button data-page="soundboard" data-i18n="navSound">Dino-Jams</button>
     <button data-page="schedule" data-i18n="navSchedule">Horarios</button>
+    <button data-page="booking" data-i18n="navBooking">Reservar</button>
     <button data-page="contact" data-i18n="navContact">Contacto</button>
     <button class="hamburger" id="hamburger-btn" aria-label="Settings">
       <span></span><span></span><span></span>
@@ -576,6 +670,49 @@
     </div>
   </div>
 
+  <!-- BOOKING CALENDAR -->
+  <div class="page" id="page-booking">
+    <div class="section-wrap">
+      <h2 class="section-title" data-i18n="bookTitle">Reserva tu Clase</h2>
+      <p class="section-sub" data-i18n="bookSub">Elige un dia y hora para tu clase con Maxi</p>
+      <div class="cal-wrap">
+        <div class="cal-header">
+          <button class="cal-nav" id="cal-prev">&#8249;</button>
+          <h3 id="cal-month-label"></h3>
+          <button class="cal-nav" id="cal-next">&#8250;</button>
+        </div>
+        <div class="cal-weekdays" id="cal-weekdays"></div>
+        <div class="cal-days" id="cal-days"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Slot overlay (modal) -->
+  <div class="slot-overlay" id="slot-overlay">
+    <div class="slot-panel">
+      <button class="slot-panel-close" id="slot-close">&times;</button>
+      <h3 data-i18n="slotTitle">Horarios Disponibles</h3>
+      <div class="slot-date" id="slot-date"></div>
+      <div class="time-slots" id="time-slots"></div>
+      <div class="book-form" id="book-form">
+        <input type="text" id="book-name" data-i18n-ph="bookPhName" placeholder="Nombre del estudiante" />
+        <select id="book-instrument">
+          <option value="" disabled selected data-i18n="bookSelectInstr">Elige instrumento</option>
+          <option value="Dino-Marimba">Dino-Marimba</option>
+          <option value="Bronto-Congos">Bronto-Congos</option>
+          <option value="Stego-Ukulele">Stego-Ukulele</option>
+          <option value="Dino-Pandereta">Dino-Pandereta</option>
+          <option value="Ptero-Flauta">Ptero-Flauta</option>
+          <option value="Rex-Xilofono">Rex-Xilofono</option>
+        </select>
+        <button class="btn-3d lava" id="book-confirm" data-i18n="bookConfirm">Confirmar Reserva</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="book-toast" id="book-toast"></div>
+
   <!-- CONTACT -->
   <div class="page" id="page-contact">
     <div class="section-wrap">
@@ -670,7 +807,9 @@ const i18n={
     sendBtn:'Enviar Rugido',
     phName:'Nombre del pequeno dino',phAge:'Edad',phParent:'Nombre del padre/madre',phPhone:'Telefono',phMsg:'Que instrumento quiere tocar? Tiene experiencia?',
     settingsLang:'\u2699 Idioma',settingsLangSub:'Elige tu idioma',
-    alertSent:'Mensaje enviado! Te contactaremos pronto. ROAR!'
+    alertSent:'Mensaje enviado! Te contactaremos pronto. ROAR!',
+    navBooking:'Reservar',bookTitle:'Reserva tu Clase',bookSub:'Elige un dia y hora para tu clase con Maxi',
+    slotTitle:'Horarios Disponibles',bookPhName:'Nombre del estudiante',bookSelectInstr:'Elige instrumento',bookConfirm:'Confirmar Reserva'
   },
   en:{navHome:'Home',navClasses:'Classes',navSound:'Dino-Jams',navSchedule:'Schedule',navContact:'Contact',
     tagline:'\u{1F3B5} Where dinosaurs make music!',
@@ -693,7 +832,9 @@ const i18n={
     sendBtn:'Send a Roar',
     phName:'Little dino\'s name',phAge:'Age',phParent:'Parent\'s name',phPhone:'Phone',phMsg:'What instrument do they want to play? Any experience?',
     settingsLang:'\u2699 Language',settingsLangSub:'Choose your language',
-    alertSent:'Message sent! We\'ll contact you soon. ROAR!'
+    alertSent:'Message sent! We\'ll contact you soon. ROAR!',
+    navBooking:'Book',bookTitle:'Book Your Class',bookSub:'Pick a day and time for your class with Maxi',
+    slotTitle:'Available Times',bookPhName:'Student\'s name',bookSelectInstr:'Choose instrument',bookConfirm:'Confirm Booking'
   },
   fr:{navHome:'Accueil',navClasses:'Cours',navSound:'Dino-Jams',navSchedule:'Horaires',navContact:'Contact',
     tagline:'\u{1F3B5} Ou les dinosaures font de la musique!',
@@ -716,7 +857,9 @@ const i18n={
     sendBtn:'Envoyer un Rugissement',
     phName:'Nom du petit dino',phAge:'Age',phParent:'Nom du parent',phPhone:'Telephone',phMsg:'Quel instrument veut-il jouer? A-t-il de l\'experience?',
     settingsLang:'\u2699 Langue',settingsLangSub:'Choisis ta langue',
-    alertSent:'Message envoye! Nous te contacterons bientot. ROAR!'
+    alertSent:'Message envoye! Nous te contacterons bientot. ROAR!',
+    navBooking:'Reserver',bookTitle:'Reserve ton Cours',bookSub:'Choisis un jour et une heure pour ton cours avec Maxi',
+    slotTitle:'Horaires Disponibles',bookPhName:'Nom de l\'eleve',bookSelectInstr:'Choisis l\'instrument',bookConfirm:'Confirmer la Reservation'
   },
   it:{navHome:'Inizio',navClasses:'Corsi',navSound:'Dino-Jams',navSchedule:'Orari',navContact:'Contatto',
     tagline:'\u{1F3B5} Dove i dinosauri fanno musica!',
@@ -739,7 +882,9 @@ const i18n={
     sendBtn:'Invia un Ruggito',
     phName:'Nome del piccolo dino',phAge:'Eta',phParent:'Nome del genitore',phPhone:'Telefono',phMsg:'Quale strumento vuole suonare? Ha esperienza?',
     settingsLang:'\u2699 Lingua',settingsLangSub:'Scegli la tua lingua',
-    alertSent:'Messaggio inviato! Ti contatteremo presto. ROAR!'
+    alertSent:'Messaggio inviato! Ti contatteremo presto. ROAR!',
+    navBooking:'Prenota',bookTitle:'Prenota la tua Lezione',bookSub:'Scegli un giorno e un orario per la lezione con Maxi',
+    slotTitle:'Orari Disponibili',bookPhName:'Nome dello studente',bookSelectInstr:'Scegli strumento',bookConfirm:'Conferma Prenotazione'
   },
   pt:{navHome:'Inicio',navClasses:'Aulas',navSound:'Dino-Jams',navSchedule:'Horarios',navContact:'Contato',
     tagline:'\u{1F3B5} Onde os dinossauros fazem musica!',
@@ -762,7 +907,9 @@ const i18n={
     sendBtn:'Enviar um Rugido',
     phName:'Nome do pequeno dino',phAge:'Idade',phParent:'Nome do responsavel',phPhone:'Telefone',phMsg:'Qual instrumento quer tocar? Tem experiencia?',
     settingsLang:'\u2699 Idioma',settingsLangSub:'Escolha seu idioma',
-    alertSent:'Mensagem enviada! Entraremos em contato em breve. ROAR!'
+    alertSent:'Mensagem enviada! Entraremos em contato em breve. ROAR!',
+    navBooking:'Reservar',bookTitle:'Reserve sua Aula',bookSub:'Escolha um dia e horario para sua aula com Maxi',
+    slotTitle:'Horarios Disponiveis',bookPhName:'Nome do estudante',bookSelectInstr:'Escolha instrumento',bookConfirm:'Confirmar Reserva'
   }
 };
 
@@ -1051,6 +1198,186 @@ document.getElementById('roar-fab').addEventListener('click',function(e){
     document.body.style.animation='shake .4s ease';
   });
 });
+
+// ============================================================
+// BOOKING CALENDAR SYSTEM
+// ============================================================
+const bookings=JSON.parse(localStorage.getItem('dinomusic-bookings')||'{}');
+function saveBookings(){localStorage.setItem('dinomusic-bookings',JSON.stringify(bookings))}
+
+let calYear,calMonth;
+const today=new Date();
+calYear=today.getFullYear();calMonth=today.getMonth();
+
+const weekdayNames={
+  es:['Dom','Lun','Mar','Mie','Jue','Vie','Sab'],
+  en:['Sun','Mon','Tue','Wed','Thu','Fri','Sat'],
+  fr:['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'],
+  it:['Dom','Lun','Mar','Mer','Gio','Ven','Sab'],
+  pt:['Dom','Seg','Ter','Qua','Qui','Sex','Sab']
+};
+const monthNames={
+  es:['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'],
+  en:['January','February','March','April','May','June','July','August','September','October','November','December'],
+  fr:['Janvier','Fevrier','Mars','Avril','Mai','Juin','Juillet','Aout','Septembre','Octobre','Novembre','Decembre'],
+  it:['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'],
+  pt:['Janeiro','Fevereiro','Marco','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro']
+};
+
+// Available time slots (Maxi's schedule)
+const slotsByDay={
+  1:['15:00','15:30','16:00','16:30','17:00','17:30'], // Mon
+  2:['15:00','15:30','16:00','16:30','17:00','17:30'], // Tue
+  3:['15:00','15:30','16:00','16:30','17:00','17:30'], // Wed
+  4:['15:00','15:30','16:00','16:30','17:00','17:30'], // Thu
+  5:['16:00','16:30','17:00','17:30'],                   // Fri
+  6:['09:00','09:30','10:00','10:30','11:00','11:30','12:00','12:30'] // Sat
+};
+
+function renderCalendar(){
+  const wdEl=document.getElementById('cal-weekdays');
+  const daysEl=document.getElementById('cal-days');
+  const labelEl=document.getElementById('cal-month-label');
+  const lang=currentLang||'es';
+  const wds=weekdayNames[lang]||weekdayNames.es;
+  const mns=monthNames[lang]||monthNames.es;
+
+  labelEl.textContent=mns[calMonth]+' '+calYear;
+  wdEl.innerHTML=wds.map(d=>'<span>'+d+'</span>').join('');
+
+  const firstDay=new Date(calYear,calMonth,1).getDay();
+  const daysInMonth=new Date(calYear,calMonth+1,0).getDate();
+  const todayStr=today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
+
+  let html='';
+  // Empty cells before first day
+  for(let i=0;i<firstDay;i++) html+='<div class="cal-day empty"></div>';
+
+  for(let d=1;d<=daysInMonth;d++){
+    const date=new Date(calYear,calMonth,d);
+    const dow=date.getDay();
+    const dateStr=calYear+'-'+(calMonth+1)+'-'+d;
+    const isPast=date<new Date(today.getFullYear(),today.getMonth(),today.getDate());
+    const isToday=dateStr===todayStr;
+    const hasSlots=slotsByDay[dow]&&!isPast;
+    const dayBookings=bookings[dateStr]||{};
+    const hasBookings=Object.keys(dayBookings).length>0;
+
+    let cls='cal-day';
+    if(isPast) cls+=' past';
+    if(isToday) cls+=' today';
+    if(hasSlots&&!isPast) cls+=' has-slots';
+    if(hasBookings) cls+=' has-bookings';
+
+    const clickable=hasSlots&&!isPast;
+    html+='<div class="'+cls+'" '+(clickable?'data-date="'+dateStr+'" data-dow="'+dow+'"':'')+'>'+d+'</div>';
+  }
+  daysEl.innerHTML=html;
+
+  // Click handlers
+  daysEl.querySelectorAll('.cal-day[data-date]').forEach(el=>{
+    el.addEventListener('click',()=>openSlotPanel(el.dataset.date,parseInt(el.dataset.dow)));
+  });
+}
+
+let selectedSlotTime=null;
+
+function openSlotPanel(dateStr,dow){
+  const overlay=document.getElementById('slot-overlay');
+  const dateEl=document.getElementById('slot-date');
+  const slotsEl=document.getElementById('time-slots');
+  const form=document.getElementById('book-form');
+  const lang=currentLang||'es';
+  const mns=monthNames[lang]||monthNames.es;
+  const parts=dateStr.split('-');
+
+  dateEl.textContent=parseInt(parts[2])+' '+mns[parseInt(parts[1])-1]+' '+parts[0];
+
+  const slots=slotsByDay[dow]||[];
+  const dayBookings=bookings[dateStr]||{};
+  selectedSlotTime=null;
+  form.classList.remove('open');
+
+  slotsEl.innerHTML=slots.map(t=>{
+    const isBooked=dayBookings[t];
+    let cls='time-slot';
+    if(isBooked) cls+=' booked';
+    let extra='';
+    if(isBooked) extra='<span class="slot-who">'+isBooked.name+'</span>';
+    return '<div class="'+cls+'" data-time="'+t+'">'+t+extra+'</div>';
+  }).join('');
+
+  // Slot click
+  slotsEl.querySelectorAll('.time-slot:not(.booked)').forEach(el=>{
+    el.addEventListener('click',()=>{
+      slotsEl.querySelectorAll('.time-slot').forEach(s=>s.classList.remove('selected'));
+      el.classList.add('selected');
+      selectedSlotTime=el.dataset.time;
+      form.classList.add('open');
+      document.getElementById('book-name').value='';
+      document.getElementById('book-instrument').selectedIndex=0;
+    });
+  });
+
+  overlay.classList.add('open');
+}
+
+document.getElementById('slot-close').addEventListener('click',()=>{
+  document.getElementById('slot-overlay').classList.remove('open');
+});
+document.getElementById('slot-overlay').addEventListener('click',e=>{
+  if(e.target===e.currentTarget) e.currentTarget.classList.remove('open');
+});
+
+// Confirm booking
+document.getElementById('book-confirm').addEventListener('click',function(){
+  const name=document.getElementById('book-name').value.trim();
+  const instr=document.getElementById('book-instrument').value;
+  if(!name||!instr||!selectedSlotTime) return;
+
+  // Find which date is open
+  const dateEl=document.getElementById('slot-date');
+  const dateText=dateEl.textContent;
+  // Find dateStr from currently selected
+  const overlay=document.getElementById('slot-overlay');
+  const selectedDay=document.querySelector('.cal-day.has-slots[data-date]');
+  // We need to store the dateStr - let's use a data attribute on overlay
+  const dateStr=overlay.dataset.currentDate;
+
+  if(!bookings[dateStr]) bookings[dateStr]={};
+  bookings[dateStr][selectedSlotTime]={name,instrument:instr,bookedAt:new Date().toISOString()};
+  saveBookings();
+
+  // Close and refresh
+  overlay.classList.remove('open');
+  renderCalendar();
+
+  // Toast
+  const toast=document.getElementById('book-toast');
+  const lang=currentLang||'es';
+  const msgs={es:'Clase reservada!',en:'Class booked!',fr:'Cours reserve!',it:'Lezione prenotata!',pt:'Aula reservada!'};
+  toast.textContent='\u{1F996} '+(msgs[lang]||msgs.es)+' '+selectedSlotTime+' - '+name;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'),3000);
+
+  playRockBreak();
+});
+
+// Store current date on overlay open
+const origOpenSlot=openSlotPanel;
+openSlotPanel=function(dateStr,dow){
+  document.getElementById('slot-overlay').dataset.currentDate=dateStr;
+  origOpenSlot(dateStr,dow);
+};
+
+document.getElementById('cal-prev').addEventListener('click',()=>{
+  calMonth--;if(calMonth<0){calMonth=11;calYear--}renderCalendar();
+});
+document.getElementById('cal-next').addEventListener('click',()=>{
+  calMonth++;if(calMonth>11){calMonth=0;calYear++}renderCalendar();
+});
+
+renderCalendar();
 </script>
 </body>
 </html>
