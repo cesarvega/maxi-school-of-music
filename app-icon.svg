@@ -1,112 +1,131 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="bgGrad" x1="0" y1="0" x2="1" y2="1">
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#1a1208"/>
       <stop offset="100%" stop-color="#2a1f10"/>
+    </linearGradient>
+    <linearGradient id="dino" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#5ce88a"/>
+      <stop offset="100%" stop-color="#22c55e"/>
+    </linearGradient>
+    <linearGradient id="guitar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#fb923c"/>
+      <stop offset="100%" stop-color="#c2410c"/>
     </linearGradient>
     <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0%" stop-color="#fb923c"/>
       <stop offset="50%" stop-color="#facc15"/>
       <stop offset="100%" stop-color="#4ade80"/>
     </linearGradient>
-    <linearGradient id="dinoGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#5ce88a"/>
-      <stop offset="100%" stop-color="#22c55e"/>
-    </linearGradient>
-    <linearGradient id="noteGrad" x1="0" y1="0" x2="0" y2="1">
-      <stop offset="0%" stop-color="#fb923c"/>
-      <stop offset="100%" stop-color="#ea580c"/>
-    </linearGradient>
-    <filter id="glow">
-      <feGaussianBlur stdDeviation="6" result="blur"/>
-      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-    </filter>
-    <filter id="shadow">
-      <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="#000" flood-opacity="0.3"/>
-    </filter>
+    <filter id="s"><feDropShadow dx="0" dy="6" stdDeviation="10" flood-color="#000" flood-opacity="0.35"/></filter>
+    <filter id="glow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
   </defs>
 
   <!-- Background -->
-  <rect width="512" height="512" rx="108" fill="url(#bgGrad)"/>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <rect x="5" y="5" width="502" height="502" rx="107" fill="none" stroke="url(#accent)" stroke-width="3" opacity="0.2"/>
 
-  <!-- Border glow -->
-  <rect x="6" y="6" width="500" height="500" rx="102" fill="none" stroke="url(#accent)" stroke-width="4" opacity="0.25"/>
+  <!-- Sparkle particles -->
+  <circle cx="70" cy="75" r="4" fill="#fb923c" opacity="0.5"/>
+  <circle cx="440" cy="60" r="3" fill="#facc15" opacity="0.45"/>
+  <circle cx="55" cy="420" r="3.5" fill="#4ade80" opacity="0.4"/>
+  <circle cx="455" cy="440" r="4" fill="#fb923c" opacity="0.35"/>
+  <circle cx="420" cy="160" r="2.5" fill="#facc15" opacity="0.5"/>
+  <circle cx="90" cy="180" r="2" fill="#4ade80" opacity="0.4"/>
 
-  <!-- Ember particles (decorative) -->
-  <circle cx="80" cy="90" r="4" fill="#fb923c" opacity="0.5"/>
-  <circle cx="420" cy="70" r="3" fill="#facc15" opacity="0.4"/>
-  <circle cx="450" cy="400" r="5" fill="#4ade80" opacity="0.35"/>
-  <circle cx="60" cy="380" r="3.5" fill="#fb923c" opacity="0.4"/>
-  <circle cx="130" cy="50" r="2.5" fill="#facc15" opacity="0.5"/>
-  <circle cx="380" cy="460" r="3" fill="#fb923c" opacity="0.45"/>
-  <circle cx="440" cy="150" r="2" fill="#4ade80" opacity="0.4"/>
-  <circle cx="70" cy="460" r="3" fill="#facc15" opacity="0.3"/>
+  <!-- Floating music notes -->
+  <g filter="url(#glow)" opacity="0.7">
+    <text x="80" y="130" font-family="serif" font-size="40" fill="#fb923c" transform="rotate(-15,80,130)">&#9835;</text>
+    <text x="410" y="110" font-family="serif" font-size="32" fill="#facc15" transform="rotate(12,410,110)">&#9834;</text>
+    <text x="430" y="370" font-family="serif" font-size="36" fill="#4ade80" transform="rotate(-8,430,370)">&#9833;</text>
+    <text x="65" y="340" font-family="serif" font-size="28" fill="#facc15" transform="rotate(10,65,340)">&#9834;</text>
+  </g>
 
-  <!-- Dino body -->
-  <g filter="url(#shadow)">
-    <!-- Body -->
-    <ellipse cx="205" cy="310" rx="90" ry="70" fill="url(#dinoGrad)"/>
-    <!-- Head -->
-    <circle cx="280" cy="230" r="55" fill="url(#dinoGrad)"/>
-    <!-- Snout -->
-    <ellipse cx="320" cy="245" rx="30" ry="22" fill="#34d46a"/>
-    <!-- Eye white -->
-    <circle cx="295" cy="218" r="16" fill="#fff"/>
-    <!-- Eye pupil -->
-    <circle cx="299" cy="216" r="9" fill="#1a1208"/>
-    <!-- Eye shine -->
-    <circle cx="303" cy="212" r="3.5" fill="#fff"/>
-    <!-- Mouth -->
-    <path d="M320 258 Q340 248 348 253" fill="none" stroke="#1a3a2a" stroke-width="3.5" stroke-linecap="round"/>
-    <!-- Nostril -->
-    <circle cx="338" cy="238" r="3" fill="#1a3a2a" opacity="0.4"/>
-    <!-- Teeth -->
-    <path d="M310 260 L313 268 L316 260" fill="#fff" opacity="0.7"/>
-    <path d="M322 257 L325 264 L328 257" fill="#fff" opacity="0.7"/>
-
-    <!-- Spikes on back -->
-    <path d="M155 270 L130 220 L175 260" fill="#facc15"/>
-    <path d="M140 285 L110 240 L158 275" fill="#facc15"/>
-    <path d="M170 258 L150 205 L190 248" fill="#fbbf24"/>
-
+  <!-- DINO WITH GUITAR — main illustration -->
+  <g filter="url(#s)" transform="translate(256, 245)">
     <!-- Tail -->
-    <path d="M115 310 Q70 280 50 310 Q35 330 55 335" fill="none" stroke="url(#dinoGrad)" stroke-width="35" stroke-linecap="round"/>
-    <!-- Tail spike -->
-    <path d="M55 320 L25 300 L50 330 L20 335 L55 340" fill="#facc15" stroke="#facc15" stroke-width="1" stroke-linejoin="round"/>
+    <path d="M-90 40 Q-140 10 -155 45 Q-165 65 -140 70" fill="none" stroke="url(#dino)" stroke-width="32" stroke-linecap="round"/>
+    <!-- Tail spikes -->
+    <path d="M-145 55 L-170 35 L-148 60 L-175 55 L-145 68" fill="#facc15"/>
 
-    <!-- Belly -->
-    <ellipse cx="210" cy="330" rx="65" ry="40" fill="#86efac" opacity="0.35"/>
+    <!-- Body -->
+    <ellipse cx="-10" cy="50" rx="85" ry="65" fill="url(#dino)"/>
+    <!-- Belly highlight -->
+    <ellipse cx="-5" cy="65" rx="55" ry="35" fill="#86efac" opacity="0.3"/>
 
     <!-- Legs -->
-    <rect x="170" y="365" width="28" height="48" rx="14" fill="#16a34a"/>
-    <rect x="225" y="365" width="28" height="48" rx="14" fill="#16a34a"/>
-    <!-- Feet -->
-    <ellipse cx="184" cy="413" rx="20" ry="8" fill="#15803d"/>
-    <ellipse cx="239" cy="413" rx="20" ry="8" fill="#15803d"/>
+    <rect x="-42" y="105" width="26" height="45" rx="13" fill="#16a34a"/>
+    <rect x="10" y="105" width="26" height="45" rx="13" fill="#16a34a"/>
+    <ellipse cx="-29" cy="150" rx="18" ry="7" fill="#15803d"/>
+    <ellipse cx="23" cy="150" rx="18" ry="7" fill="#15803d"/>
 
-    <!-- Arms (tiny T-Rex style) -->
-    <path d="M260 290 Q275 305 268 315" fill="none" stroke="#22c55e" stroke-width="12" stroke-linecap="round"/>
+    <!-- GUITAR (dino is holding it!) -->
+    <g transform="translate(20, 10) rotate(-15)">
+      <!-- Guitar neck -->
+      <rect x="-6" y="-100" width="12" height="95" rx="4" fill="#92400e"/>
+      <!-- Frets -->
+      <line x1="-4" y1="-80" x2="4" y2="-80" stroke="#fbbf24" stroke-width="1.5"/>
+      <line x1="-4" y1="-65" x2="4" y2="-65" stroke="#fbbf24" stroke-width="1.5"/>
+      <line x1="-4" y1="-50" x2="4" y2="-50" stroke="#fbbf24" stroke-width="1.5"/>
+      <line x1="-4" y1="-35" x2="4" y2="-35" stroke="#fbbf24" stroke-width="1.5"/>
+      <!-- Guitar headstock -->
+      <rect x="-10" y="-118" width="20" height="22" rx="6" fill="#7c2d12"/>
+      <!-- Tuning pegs -->
+      <circle cx="-7" cy="-112" r="3" fill="#fbbf24"/>
+      <circle cx="7" cy="-112" r="3" fill="#fbbf24"/>
+      <circle cx="-7" cy="-102" r="3" fill="#fbbf24"/>
+      <circle cx="7" cy="-102" r="3" fill="#fbbf24"/>
+      <!-- Guitar body -->
+      <ellipse cx="0" cy="15" rx="35" ry="28" fill="url(#guitar)"/>
+      <ellipse cx="0" cy="38" rx="40" ry="32" fill="url(#guitar)"/>
+      <!-- Sound hole -->
+      <circle cx="0" cy="25" r="12" fill="#7c2d12"/>
+      <circle cx="0" cy="25" r="10" fill="#5c1d0a" opacity="0.6"/>
+      <!-- Bridge -->
+      <rect x="-12" y="45" width="24" height="4" rx="2" fill="#7c2d12"/>
+      <!-- Strings -->
+      <line x1="-3" y1="-95" x2="-3" y2="45" stroke="#fde68a" stroke-width="0.8" opacity="0.7"/>
+      <line x1="0" y1="-95" x2="0" y2="45" stroke="#fde68a" stroke-width="1" opacity="0.8"/>
+      <line x1="3" y1="-95" x2="3" y2="45" stroke="#fde68a" stroke-width="0.8" opacity="0.7"/>
+      <!-- Guitar shine -->
+      <ellipse cx="-12" cy="10" rx="8" ry="14" fill="#fff" opacity="0.08" transform="rotate(-20,-12,10)"/>
+    </g>
+
+    <!-- Left arm (holding guitar neck) -->
+    <path d="M-40 20 Q-10 -15 15 -10" fill="none" stroke="#22c55e" stroke-width="16" stroke-linecap="round"/>
+    <!-- Left hand on neck -->
+    <circle cx="14" cy="-10" r="9" fill="#34d46a"/>
+
+    <!-- Right arm (strumming) -->
+    <path d="M40 25 Q55 45 42 60" fill="none" stroke="#22c55e" stroke-width="14" stroke-linecap="round"/>
+    <!-- Right hand near sound hole -->
+    <circle cx="42" cy="58" r="8" fill="#34d46a"/>
+
+    <!-- Back spikes -->
+    <path d="M-65 5 L-85 -40 L-55 10" fill="#facc15"/>
+    <path d="M-50 -8 L-65 -50 L-40 -2" fill="#fbbf24"/>
+    <path d="M-35 -18 L-42 -60 L-25 -15" fill="#facc15"/>
+
+    <!-- Head -->
+    <circle cx="50" cy="-50" r="52" fill="url(#dino)"/>
+    <!-- Snout -->
+    <ellipse cx="88" cy="-38" rx="28" ry="20" fill="#34d46a"/>
+    <!-- Eye white -->
+    <circle cx="68" cy="-62" r="16" fill="#fff"/>
+    <!-- Pupil -->
+    <circle cx="72" cy="-63" r="9" fill="#1a1208"/>
+    <!-- Eye shine -->
+    <circle cx="75" cy="-66" r="3.5" fill="#fff"/>
+    <!-- Big happy smile -->
+    <path d="M78 -32 Q95 -22 105 -30" fill="none" stroke="#1a3a2a" stroke-width="3.5" stroke-linecap="round"/>
+    <!-- Open mouth smile -->
+    <path d="M82 -28 Q92 -18 102 -25" fill="#15803d" opacity="0.5"/>
+    <!-- Teeth -->
+    <path d="M85 -28 L87 -22 L89 -28" fill="#fff" opacity="0.7"/>
+    <path d="M93 -26 L95 -20 L97 -26" fill="#fff" opacity="0.7"/>
+    <!-- Nostril -->
+    <circle cx="102" cy="-42" r="3" fill="#1a3a2a" opacity="0.35"/>
+    <!-- Cheek blush -->
+    <ellipse cx="82" cy="-25" rx="8" ry="5" fill="#f472b6" opacity="0.2"/>
   </g>
-
-  <!-- Music note (large, to the right) -->
-  <g filter="url(#glow)" transform="translate(350, 100)">
-    <!-- Note head -->
-    <ellipse cx="0" cy="95" rx="28" ry="20" fill="url(#noteGrad)" transform="rotate(-20, 0, 95)"/>
-    <!-- Note stem -->
-    <rect x="20" y="10" width="10" height="85" rx="5" fill="url(#noteGrad)"/>
-    <!-- Note flag -->
-    <path d="M30 10 Q55 20 55 50 Q55 65 40 55 Q50 40 45 25 Q42 18 30 15Z" fill="#facc15"/>
-    <!-- Second flag -->
-    <path d="M30 25 Q50 35 50 58 Q50 70 38 62 Q46 50 42 38 Q40 32 30 30Z" fill="#facc15" opacity="0.6"/>
-  </g>
-
-  <!-- Small floating notes -->
-  <g opacity="0.6">
-    <text x="100" y="140" font-family="serif" font-size="36" fill="#fb923c" transform="rotate(-15, 100, 140)">&#9834;</text>
-    <text x="400" y="310" font-family="serif" font-size="28" fill="#facc15" transform="rotate(10, 400, 310)">&#9835;</text>
-    <text x="350" y="430" font-family="serif" font-size="32" fill="#4ade80" transform="rotate(-8, 350, 430)">&#9833;</text>
-  </g>
-
-  <!-- Text: MAXI -->
-  <text x="256" y="480" text-anchor="middle" font-family="Fredoka, Arial Rounded MT Bold, sans-serif" font-weight="700" font-size="52" fill="url(#accent)" letter-spacing="6">MAXI</text>
 </svg>

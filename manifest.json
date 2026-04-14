@@ -1,0 +1,17 @@
+{
+  "name": "MAXI SCHOOL OF MUSIC",
+  "short_name": "DinoMusic",
+  "description": "Clases de musica para ninos con tema de dinosaurios",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#1a1208",
+  "theme_color": "#fb923c",
+  "icons": [
+    {
+      "src": "/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
