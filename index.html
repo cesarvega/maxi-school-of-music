@@ -482,13 +482,13 @@
     }
     .hud-item{display:flex;align-items:center;gap:6px;font-weight:700;font-size:clamp(14px,3.5vw,18px);color:var(--accent2)}
     .hud-item span:first-child{font-size:clamp(18px,4vw,22px)}
-    .canvas-box{position:relative;max-width:600px;margin:0 auto}
+    .canvas-box{position:relative;max-width:600px;margin:0 auto;min-height:220px}
     #game-canvas{
-      display:block;width:100%;height:auto;aspect-ratio:3/1;
+      display:block;width:100%;height:auto;aspect-ratio:2/1;min-height:220px;
       border-radius:16px;background:linear-gradient(180deg,#7dd3fc 0%,#bae6fd 60%,#fef3c7 100%);
       border:3px solid var(--accent-dark);
       box-shadow:0 8px 30px rgba(0,0,0,.4);
-      touch-action:none;cursor:pointer;
+      touch-action:manipulation;cursor:pointer;
     }
     .game-controls{
       display:flex;gap:8px;margin-top:10px;justify-content:center;
@@ -2234,6 +2234,7 @@ loadBookings().then(()=>renderCalendar());
     obstacles:[],
     collectibles:[],
     particles:[],
+    clouds:[],
     bgOffset:0,
     flash:0,
     combo:0,
@@ -2570,10 +2571,11 @@ loadBookings().then(()=>renderCalendar());
   function start(){
     reset();
     state.running=true;
+    state.lastTime=performance.now();
     document.getElementById('game-overlay').classList.add('hidden');
-    if(!isMuted){bgMusic.currentTime=0;bgMusic.play().catch(()=>{})}
-    if(ac.state==='suspended')ac.resume();
-    tick();
+    try{if(!isMuted){bgMusic.currentTime=0;bgMusic.play().catch(()=>{})}}catch(e){}
+    try{if(ac.state==='suspended')ac.resume()}catch(e){}
+    requestAnimationFrame(tick);
   }
 
   // Sync music with mute
