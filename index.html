@@ -573,6 +573,70 @@
       height:6px;border-radius:3px;background:linear-gradient(90deg,#92400e,#a16207,#92400e);
       box-shadow:0 2px 6px rgba(0,0,0,.3);
     }
+    /* ===== XYLOPHONE INSTRUMENT ===== */
+    .xylo-overlay{
+      position:fixed;top:0;left:0;right:0;bottom:0;z-index:55;
+      background:rgba(0,0,0,.85);backdrop-filter:blur(8px);
+      display:none;flex-direction:column;align-items:center;justify-content:center;
+      padding:16px;cursor:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='48' viewBox='0 0 32 48'%3E%3Ccircle cx='16' cy='6' r='5' fill='%237c3aed'/%3E%3Ccircle cx='16' cy='6' r='3.5' fill='%23a78bfa'/%3E%3Crect x='14.5' y='9' width='3' height='30' rx='1.5' fill='%23581c87'/%3E%3Ccircle cx='16' cy='5' r='1.5' fill='%23ddd6fe' opacity='.5'/%3E%3C/svg%3E") 16 6,pointer;
+    }
+    .xylo-overlay.open{display:flex}
+    .xylo-close{
+      position:absolute;top:16px;right:16px;width:44px;height:44px;
+      border-radius:50%;border:none;
+      background:linear-gradient(180deg,var(--btn-top),var(--btn-bot));
+      border-bottom:3px solid var(--btn-shadow);color:var(--btn-text);
+      font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;
+      box-shadow:0 3px 0 var(--btn-shadow),0 4px 8px rgba(0,0,0,.3);
+      transition:all .15s ease;z-index:56;
+    }
+    .xylo-close:hover{transform:translateY(-2px)}
+    .xylo-close:active{transform:translateY(2px);border-bottom-width:1px}
+    .xylo-header{text-align:center;margin-bottom:clamp(12px,3vw,24px)}
+    .xylo-header h3{font-size:clamp(1.3rem,4vw,2rem);color:#a78bfa;margin-bottom:4px}
+    .xylo-header p{color:var(--text-muted);font-size:clamp(.8rem,2.5vw,.95rem)}
+    .xylo-keys{
+      display:flex;align-items:center;gap:clamp(3px,1vw,6px);
+    }
+    .xylo-key{
+      border-radius:8px;border:none;cursor:inherit;
+      font-family:'Fredoka',sans-serif;font-weight:700;
+      font-size:clamp(11px,2.5vw,16px);color:#fff;
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      gap:2px;transition:transform .06s ease,filter .06s ease;
+      position:relative;
+      text-shadow:0 1px 3px rgba(0,0,0,.4);
+      box-shadow:inset 0 2px 0 rgba(255,255,255,.25),inset 0 -2px 0 rgba(0,0,0,.2),0 4px 8px rgba(0,0,0,.3);
+    }
+    .xylo-key .key-note{font-size:clamp(8px,1.8vw,11px);opacity:.7}
+    .xylo-key:active,.xylo-key.hit{
+      transform:scaleY(.92) translateY(3px);
+      filter:brightness(1.3) saturate(1.2);
+    }
+    /* Metallic shine line on each key */
+    .xylo-key::after{
+      content:'';position:absolute;top:6px;left:15%;width:70%;height:3px;
+      background:rgba(255,255,255,.2);border-radius:2px;
+    }
+    /* Frame rails */
+    .xylo-frame{
+      display:flex;flex-direction:column;align-items:center;gap:6px;margin-top:10px;
+    }
+    .xylo-rail{
+      height:8px;border-radius:4px;
+      background:linear-gradient(90deg,#4c1d95,#6d28d9,#4c1d95);
+      box-shadow:0 2px 8px rgba(109,40,217,.3),inset 0 1px 0 rgba(255,255,255,.1);
+    }
+    /* Star burst effect for xylophone */
+    .xylo-star{
+      position:fixed;pointer-events:none;z-index:57;
+      font-size:24px;animation:starBurst .5s ease-out forwards;
+    }
+    @keyframes starBurst{
+      0%{transform:scale(.5) rotate(0);opacity:1}
+      100%{transform:scale(1.8) rotate(40deg) translateY(-30px);opacity:0}
+    }
+
     .marimba-hit-effect{
       position:fixed;pointer-events:none;z-index:57;
       width:30px;height:30px;border-radius:50%;
@@ -974,7 +1038,7 @@ const i18n={
     navBooking:'Reservar',bookTitle:'Reserva tu Clase',bookSub:'Elige un dia y hora para tu clase con Maxi',
     slotTitle:'Horarios Disponibles',bookPhName:'Nombre del estudiante',bookSelectInstr:'Elige instrumento',bookConfirm:'Confirmar Reserva',
     shareTitle:'Compartir',shareNative:'Compartir',shareCopy:'Copiar Link',shareCopied:'Copiado!',
-    marimbaTip:'Toca las teclas para tocar!'
+    marimbaTip:'Toca las teclas para tocar!',xyloTip:'Toca las barras de colores!'
   },
   en:{navHome:'Home',navClasses:'Classes',navSound:'Dino-Jams',navSchedule:'Schedule',navContact:'Contact',
     tagline:'\u{1F3B5} Where dinosaurs make music!',
@@ -1001,7 +1065,7 @@ const i18n={
     navBooking:'Book',bookTitle:'Book Your Class',bookSub:'Pick a day and time for your class with Maxi',
     slotTitle:'Available Times',bookPhName:'Student\'s name',bookSelectInstr:'Choose instrument',bookConfirm:'Confirm Booking',
     shareTitle:'Share',shareNative:'Share',shareCopy:'Copy Link',shareCopied:'Copied!',
-    marimbaTip:'Tap the keys to play!'
+    marimbaTip:'Tap the keys to play!',xyloTip:'Tap the colorful bars!'
   },
   fr:{navHome:'Accueil',navClasses:'Cours',navSound:'Dino-Jams',navSchedule:'Horaires',navContact:'Contact',
     tagline:'\u{1F3B5} Ou les dinosaures font de la musique!',
@@ -1028,7 +1092,7 @@ const i18n={
     navBooking:'Reserver',bookTitle:'Reserve ton Cours',bookSub:'Choisis un jour et une heure pour ton cours avec Maxi',
     slotTitle:'Horaires Disponibles',bookPhName:'Nom de l\'eleve',bookSelectInstr:'Choisis l\'instrument',bookConfirm:'Confirmer la Reservation',
     shareTitle:'Partager',shareNative:'Partager',shareCopy:'Copier le lien',shareCopied:'Copie!',
-    marimbaTip:'Touche les touches pour jouer!'
+    marimbaTip:'Touche les touches pour jouer!',xyloTip:'Touche les barres colorees!'
   },
   it:{navHome:'Inizio',navClasses:'Corsi',navSound:'Dino-Jams',navSchedule:'Orari',navContact:'Contatto',
     tagline:'\u{1F3B5} Dove i dinosauri fanno musica!',
@@ -1055,7 +1119,7 @@ const i18n={
     navBooking:'Prenota',bookTitle:'Prenota la tua Lezione',bookSub:'Scegli un giorno e un orario per la lezione con Maxi',
     slotTitle:'Orari Disponibili',bookPhName:'Nome dello studente',bookSelectInstr:'Scegli strumento',bookConfirm:'Conferma Prenotazione',
     shareTitle:'Condividi',shareNative:'Condividi',shareCopy:'Copia link',shareCopied:'Copiato!',
-    marimbaTip:'Tocca i tasti per suonare!'
+    marimbaTip:'Tocca i tasti per suonare!',xyloTip:'Tocca le barre colorate!'
   },
   pt:{navHome:'Inicio',navClasses:'Aulas',navSound:'Dino-Jams',navSchedule:'Horarios',navContact:'Contato',
     tagline:'\u{1F3B5} Onde os dinossauros fazem musica!',
@@ -1082,7 +1146,7 @@ const i18n={
     navBooking:'Reservar',bookTitle:'Reserve sua Aula',bookSub:'Escolha um dia e horario para sua aula com Maxi',
     slotTitle:'Horarios Disponiveis',bookPhName:'Nome do estudante',bookSelectInstr:'Escolha instrumento',bookConfirm:'Confirmar Reserva',
     shareTitle:'Compartilhar',shareNative:'Compartilhar',shareCopy:'Copiar link',shareCopied:'Copiado!',
-    marimbaTip:'Toque as teclas para tocar!'
+    marimbaTip:'Toque as teclas para tocar!',xyloTip:'Toque as barras coloridas!'
   }
 };
 
@@ -1336,6 +1400,7 @@ document.querySelectorAll('.sound-pad').forEach(pad=>{
   pad.addEventListener('click',function(e){
     const key=this.dataset.sound;
     if(key==='dinoC'){ openMarimba(); return; }
+    if(key==='dinoA'){ openXylophone(); return; }
     if(key==='roar'){
       playRoarSound();
       // Roar text
@@ -1496,7 +1561,158 @@ function openMarimba(){
   },{passive:false});
 }
 
+// ============================================================
+// XYLOPHONE INSTRUMENT
+// ============================================================
+const xyloNotes=[
+  {note:'Do',freq:523.25,color:'#ef4444',w:1},
+  {note:'Re',freq:587.33,color:'#f97316',w:.94},
+  {note:'Mi',freq:659.25,color:'#eab308',w:.88},
+  {note:'Fa',freq:698.46,color:'#84cc16',w:.82},
+  {note:'Sol',freq:783.99,color:'#22c55e',w:.76},
+  {note:'La',freq:880.00,color:'#06b6d4',w:.70},
+  {note:'Si',freq:987.77,color:'#6366f1',w:.64},
+  {note:'Do+',freq:1046.50,color:'#a855f7',w:.58},
+];
+
+function playXyloNote(freq){
+  if(ac.state==='suspended')ac.resume();
+  const now=ac.currentTime;
+  // Bright metallic xylophone — triangle wave with fast decay
+  const osc=ac.createOscillator();osc.type='triangle';
+  osc.frequency.setValueAtTime(freq,now);
+  const g=ac.createGain();
+  g.gain.setValueAtTime(.35,now);
+  g.gain.exponentialRampToValueAtTime(.15,now+.05);
+  g.gain.exponentialRampToValueAtTime(.01,now+.5);
+  // Metallic overtone (high, bell-like)
+  const osc2=ac.createOscillator();osc2.type='sine';
+  osc2.frequency.setValueAtTime(freq*3,now);
+  const g2=ac.createGain();
+  g2.gain.setValueAtTime(.08,now);
+  g2.gain.exponentialRampToValueAtTime(.01,now+.2);
+  // Shimmer
+  const osc3=ac.createOscillator();osc3.type='sine';
+  osc3.frequency.setValueAtTime(freq*5.04,now);
+  const g3=ac.createGain();
+  g3.gain.setValueAtTime(.03,now);
+  g3.gain.exponentialRampToValueAtTime(.01,now+.12);
+  // Metal click
+  const click=ac.createBufferSource();
+  const cBuf=ac.createBuffer(1,ac.sampleRate*.008,ac.sampleRate);
+  const cd=cBuf.getChannelData(0);
+  for(let i=0;i<cd.length;i++)cd[i]=(Math.random()*2-1)*Math.pow(1-i/cd.length,8);
+  click.buffer=cBuf;
+  const cg=ac.createGain();cg.gain.setValueAtTime(.15,now);
+  const cf=ac.createBiquadFilter();cf.type='highpass';cf.frequency.value=4000;
+
+  osc.connect(g).connect(ac.destination);
+  osc2.connect(g2).connect(ac.destination);
+  osc3.connect(g3).connect(ac.destination);
+  click.connect(cf).connect(cg).connect(ac.destination);
+  osc.start(now);osc.stop(now+.5);
+  osc2.start(now);osc2.stop(now+.2);
+  osc3.start(now);osc3.stop(now+.12);
+  click.start(now);
+}
+
+function openXylophone(){
+  document.querySelector('.xylo-overlay')?.remove();
+  const overlay=document.createElement('div');
+  overlay.className='xylo-overlay open';
+  const t=i18n[currentLang]||i18n.en;
+
+  overlay.innerHTML=`
+    <button class="xylo-close">&times;</button>
+    <div class="xylo-header">
+      <h3>\u{1F996} Rex-Xilofono</h3>
+      <p>${t.xyloTip||'Tap the colorful bars!'}</p>
+    </div>
+    <div class="xylo-keys" id="xylo-keys"></div>
+    <div class="xylo-frame">
+      <div class="xylo-rail" style="width:clamp(260px,82vw,560px)"></div>
+      <div class="xylo-rail" style="width:clamp(240px,78vw,520px)"></div>
+    </div>
+  `;
+  document.body.appendChild(overlay);
+
+  const keysEl=document.getElementById('xylo-keys');
+  const maxW=Math.min(window.innerWidth*.1,80);
+
+  xyloNotes.forEach((n,i)=>{
+    const key=document.createElement('button');
+    key.className='xylo-key';
+    const w=Math.max(36,maxW*n.w/.58); // scale widths
+    const h=clampVal(100+i*4,90,140);
+    key.style.width=w+'px';
+    key.style.height=h+'px';
+    key.style.background=`linear-gradient(180deg, ${n.color} 0%, ${darkenHex(n.color,30)} 100%)`;
+    key.innerHTML=`<span class="key-note">${n.note}</span>`;
+    key.dataset.idx=i;
+
+    const hitHandler=(e)=>{
+      e.preventDefault();
+      playXyloNote(n.freq);
+      key.classList.add('hit');
+      setTimeout(()=>key.classList.remove('hit'),80);
+      // Star burst
+      const rect=key.getBoundingClientRect();
+      const star=document.createElement('div');
+      star.className='xylo-star';
+      star.textContent=['\u2728','\u2B50','\u{1F31F}'][0|Math.random()*3];
+      star.style.left=(rect.left+rect.width/2-12)+'px';
+      star.style.top=(rect.top-10)+'px';
+      document.body.appendChild(star);
+      setTimeout(()=>star.remove(),500);
+      // Float note
+      const nt=document.createElement('div');nt.className='note-float';
+      nt.textContent=['\u266A','\u266B','\u266C'][0|Math.random()*3];
+      nt.style.left=(rect.left+rect.width/2-16)+'px';
+      nt.style.top=(rect.top-20)+'px';
+      nt.style.color=n.color;
+      document.body.appendChild(nt);setTimeout(()=>nt.remove(),1200);
+    };
+
+    key.addEventListener('mousedown',hitHandler);
+    key.addEventListener('touchstart',hitHandler,{passive:false});
+    keysEl.appendChild(key);
+  });
+
+  // Close
+  overlay.querySelector('.xylo-close').addEventListener('click',(e)=>{e.stopPropagation();overlay.remove()});
+  overlay.addEventListener('click',(e)=>{if(e.target===overlay)overlay.remove()});
+
+  // Drag-play
+  let dragging=false;
+  keysEl.addEventListener('mousedown',()=>dragging=true);
+  document.addEventListener('mouseup',()=>dragging=false);
+  keysEl.querySelectorAll('.xylo-key').forEach(key=>{
+    key.addEventListener('mouseenter',()=>{
+      if(dragging){
+        const i=parseInt(key.dataset.idx);
+        playXyloNote(xyloNotes[i].freq);
+        key.classList.add('hit');setTimeout(()=>key.classList.remove('hit'),80);
+      }
+    });
+  });
+  // Touch drag
+  keysEl.addEventListener('touchmove',(e)=>{
+    e.preventDefault();
+    const touch=e.touches[0];
+    const el=document.elementFromPoint(touch.clientX,touch.clientY);
+    if(el&&el.classList.contains('xylo-key')&&!el.classList.contains('hit')){
+      const i=parseInt(el.dataset.idx);
+      playXyloNote(xyloNotes[i].freq);
+      el.classList.add('hit');setTimeout(()=>el.classList.remove('hit'),80);
+    }
+  },{passive:false});
+}
+
 function clampVal(v,min,max){return Math.max(min,Math.min(max,v))}
+function darkenHex(hex,amt){
+  const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
+  return '#'+[r,g,b].map(c=>Math.max(0,c-amt).toString(16).padStart(2,'0')).join('');
+}
 function darken(hex){
   const r=parseInt(hex.slice(1,3),16),g=parseInt(hex.slice(3,5),16),b=parseInt(hex.slice(5,7),16);
   return '#'+[r,g,b].map(c=>Math.max(0,c-50).toString(16).padStart(2,'0')).join('');
