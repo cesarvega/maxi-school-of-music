@@ -20,3 +20,5 @@ require('fs').writeFileSync('dist/index.html', html);
 cp favicon.svg dist/
 cp app-icon.svg dist/
 cp manifest.json dist/
+cp level1.mp3 dist/ 2>/dev/null || true
+cp level2.mp3 dist/ 2>/dev/null || true

@@ -2480,6 +2480,8 @@ loadBookings().then(()=>renderCalendar());
 
     // Score from distance
     if(state.distance%30===0){state.score+=1;updateHud()}
+    // Level 2 transition at 500 points
+    if(state.score>=500&&currentLevel===1)switchToLevel2();
     // Reset combo if no egg collected recently
     if(state.distance%150===0)state.combo=Math.max(0,state.combo-1);
 
@@ -2501,10 +2503,35 @@ loadBookings().then(()=>renderCalendar());
     requestAnimationFrame(tick);
   }
 
+  const bgMusic=new Audio('/level1.mp3');
+  bgMusic.loop=true;bgMusic.volume=.4;
+  const bgMusic2=new Audio('/level2.mp3');
+  bgMusic2.loop=true;bgMusic2.volume=.4;
+  let currentLevel=1;
+
+  function switchToLevel2(){
+    if(currentLevel===2)return;
+    currentLevel=2;
+    bgMusic.pause();
+    if(!isMuted&&state.running){bgMusic2.currentTime=0;bgMusic2.play().catch(()=>{})}
+    // Visual feedback
+    for(let i=0;i<20;i++){
+      state.particles.push({
+        x:Math.random()*W,y:Math.random()*H,
+        vx:(Math.random()-.5)*6,vy:-Math.random()*6,
+        life:40,size:4+Math.random()*4,
+        color:['#f472b6','#a78bfa','#38bdf8','#facc15'][0|Math.random()*4]
+      });
+    }
+  }
+
   function gameOver(){
     state.running=false;
     state.flash=.6;
     hitFx();
+    bgMusic.pause();bgMusic.currentTime=0;
+    bgMusic2.pause();bgMusic2.currentTime=0;
+    currentLevel=1;
     if(state.score>best){best=state.score;localStorage.setItem('dino-runner-best',best);document.getElementById('game-best').textContent=best;}
     const ov=document.getElementById('game-overlay');
     ov.classList.remove('hidden');
@@ -2517,8 +2544,23 @@ loadBookings().then(()=>renderCalendar());
     reset();
     state.running=true;
     document.getElementById('game-overlay').classList.add('hidden');
+    if(!isMuted){
+      bgMusic.currentTime=0;
+      bgMusic.play().catch(()=>{});
+    }
     tick();
   }
+
+  // Sync music with mute button
+  const origMuteBtn=document.getElementById('mute-fab');
+  origMuteBtn.addEventListener('click',()=>{
+    setTimeout(()=>{
+      if(isMuted){bgMusic.pause();bgMusic2.pause()}
+      else if(state.running){
+        (currentLevel===2?bgMusic2:bgMusic).play().catch(()=>{});
+      }
+    },50);
+  });
 
   document.getElementById('game-start').addEventListener('click',start);
   document.getElementById('game-left').addEventListener('click',()=>moveLane(-1));
