@@ -443,6 +443,26 @@
       pointer-events:none;white-space:nowrap;
     }
     .book-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    /* SHARE POPUP */
+    .share-popup{
+      position:fixed;z-index:40;
+      background:var(--bg);border:2px solid rgba(255,255,255,.1);
+      border-radius:18px;padding:14px;min-width:200px;
+      box-shadow:0 12px 40px rgba(0,0,0,.5);backdrop-filter:blur(12px);
+      opacity:0;transform:translateY(10px) scale(.9);
+      transition:all .25s cubic-bezier(.34,1.56,.64,1);
+    }
+    .share-popup.show{opacity:1;transform:translateY(0) scale(1)}
+    .share-title{font-size:15px;font-weight:700;color:var(--accent);margin-bottom:10px;text-align:center}
+    .share-btns{display:flex;flex-direction:column;gap:6px}
+    .share-opt{
+      font-family:'Fredoka',sans-serif;
+      background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+      border-radius:12px;padding:10px 14px;color:#fff;font-size:14px;
+      cursor:pointer;transition:all .2s;text-align:left;font-weight:500;
+    }
+    .share-opt:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.15)}
   </style>
 </head>
 <body>
@@ -824,7 +844,8 @@ const i18n={
     settingsLang:'\u2699 Idioma',settingsLangSub:'Elige tu idioma',
     alertSent:'Mensaje enviado! Te contactaremos pronto. ROAR!',
     navBooking:'Reservar',bookTitle:'Reserva tu Clase',bookSub:'Elige un dia y hora para tu clase con Maxi',
-    slotTitle:'Horarios Disponibles',bookPhName:'Nombre del estudiante',bookSelectInstr:'Elige instrumento',bookConfirm:'Confirmar Reserva'
+    slotTitle:'Horarios Disponibles',bookPhName:'Nombre del estudiante',bookSelectInstr:'Elige instrumento',bookConfirm:'Confirmar Reserva',
+    shareTitle:'Compartir',shareNative:'Compartir',shareCopy:'Copiar Link',shareCopied:'Copiado!'
   },
   en:{navHome:'Home',navClasses:'Classes',navSound:'Dino-Jams',navSchedule:'Schedule',navContact:'Contact',
     tagline:'\u{1F3B5} Where dinosaurs make music!',
@@ -849,7 +870,8 @@ const i18n={
     settingsLang:'\u2699 Language',settingsLangSub:'Choose your language',
     alertSent:'Message sent! We\'ll contact you soon. ROAR!',
     navBooking:'Book',bookTitle:'Book Your Class',bookSub:'Pick a day and time for your class with Maxi',
-    slotTitle:'Available Times',bookPhName:'Student\'s name',bookSelectInstr:'Choose instrument',bookConfirm:'Confirm Booking'
+    slotTitle:'Available Times',bookPhName:'Student\'s name',bookSelectInstr:'Choose instrument',bookConfirm:'Confirm Booking',
+    shareTitle:'Share',shareNative:'Share',shareCopy:'Copy Link',shareCopied:'Copied!'
   },
   fr:{navHome:'Accueil',navClasses:'Cours',navSound:'Dino-Jams',navSchedule:'Horaires',navContact:'Contact',
     tagline:'\u{1F3B5} Ou les dinosaures font de la musique!',
@@ -874,7 +896,8 @@ const i18n={
     settingsLang:'\u2699 Langue',settingsLangSub:'Choisis ta langue',
     alertSent:'Message envoye! Nous te contacterons bientot. ROAR!',
     navBooking:'Reserver',bookTitle:'Reserve ton Cours',bookSub:'Choisis un jour et une heure pour ton cours avec Maxi',
-    slotTitle:'Horaires Disponibles',bookPhName:'Nom de l\'eleve',bookSelectInstr:'Choisis l\'instrument',bookConfirm:'Confirmer la Reservation'
+    slotTitle:'Horaires Disponibles',bookPhName:'Nom de l\'eleve',bookSelectInstr:'Choisis l\'instrument',bookConfirm:'Confirmer la Reservation',
+    shareTitle:'Partager',shareNative:'Partager',shareCopy:'Copier le lien',shareCopied:'Copie!'
   },
   it:{navHome:'Inizio',navClasses:'Corsi',navSound:'Dino-Jams',navSchedule:'Orari',navContact:'Contatto',
     tagline:'\u{1F3B5} Dove i dinosauri fanno musica!',
@@ -899,7 +922,8 @@ const i18n={
     settingsLang:'\u2699 Lingua',settingsLangSub:'Scegli la tua lingua',
     alertSent:'Messaggio inviato! Ti contatteremo presto. ROAR!',
     navBooking:'Prenota',bookTitle:'Prenota la tua Lezione',bookSub:'Scegli un giorno e un orario per la lezione con Maxi',
-    slotTitle:'Orari Disponibili',bookPhName:'Nome dello studente',bookSelectInstr:'Scegli strumento',bookConfirm:'Conferma Prenotazione'
+    slotTitle:'Orari Disponibili',bookPhName:'Nome dello studente',bookSelectInstr:'Scegli strumento',bookConfirm:'Conferma Prenotazione',
+    shareTitle:'Condividi',shareNative:'Condividi',shareCopy:'Copia link',shareCopied:'Copiato!'
   },
   pt:{navHome:'Inicio',navClasses:'Aulas',navSound:'Dino-Jams',navSchedule:'Horarios',navContact:'Contato',
     tagline:'\u{1F3B5} Onde os dinossauros fazem musica!',
@@ -924,7 +948,8 @@ const i18n={
     settingsLang:'\u2699 Idioma',settingsLangSub:'Escolha seu idioma',
     alertSent:'Mensagem enviada! Entraremos em contato em breve. ROAR!',
     navBooking:'Reservar',bookTitle:'Reserve sua Aula',bookSub:'Escolha um dia e horario para sua aula com Maxi',
-    slotTitle:'Horarios Disponiveis',bookPhName:'Nome do estudante',bookSelectInstr:'Escolha instrumento',bookConfirm:'Confirmar Reserva'
+    slotTitle:'Horarios Disponiveis',bookPhName:'Nome do estudante',bookSelectInstr:'Escolha instrumento',bookConfirm:'Confirmar Reserva',
+    shareTitle:'Compartilhar',shareNative:'Compartilhar',shareCopy:'Copiar link',shareCopied:'Copiado!'
   }
 };
 
@@ -1211,8 +1236,67 @@ document.getElementById('roar-fab').addEventListener('click',function(e){
     document.body.appendChild(rt);setTimeout(()=>rt.remove(),1000);
     document.body.style.animation='none';document.body.offsetHeight;
     document.body.style.animation='shake .4s ease';
+    // Try native share first (mobile), fallback to popup
+    const shareUrl='https://maxi-school-of-music.vercel.app';
+    const shareText='MAXI SCHOOL OF MUSIC - Where dinosaurs make music! \u{1F996}\u{1F3B8}';
+    if(navigator.share){
+      navigator.share({title:'MAXI SCHOOL OF MUSIC',text:shareText,url:shareUrl}).catch(()=>{});
+    } else {
+      showSharePopup(e.clientX,e.clientY);
+    }
   });
 });
+
+function showSharePopup(x,y){
+  // Remove existing
+  document.querySelector('.share-popup')?.remove();
+  const popup=document.createElement('div');
+  popup.className='share-popup';
+  const shareUrl='https://maxi-school-of-music.vercel.app';
+  const shareText='MAXI SCHOOL OF MUSIC - Where dinosaurs make music! 🦖🎸';
+  popup.innerHTML=`
+    <div class="share-title">${i18n[currentLang]?.shareTitle||'Share'} 🦖</div>
+    <div class="share-btns">
+      <button class="share-opt" data-action="native">📤 ${i18n[currentLang]?.shareNative||'Share'}</button>
+      <button class="share-opt" data-action="copy">📋 ${i18n[currentLang]?.shareCopy||'Copy Link'}</button>
+      <button class="share-opt" data-action="whatsapp">💬 WhatsApp</button>
+    </div>
+  `;
+  // Position near the dino
+  const fab=document.getElementById('roar-fab');
+  const fabRect=fab.getBoundingClientRect();
+  popup.style.left=Math.min(fabRect.left,window.innerWidth-220)+'px';
+  popup.style.bottom=(window.innerHeight-fabRect.top+10)+'px';
+  document.body.appendChild(popup);
+  requestAnimationFrame(()=>popup.classList.add('show'));
+
+  // Actions
+  popup.querySelectorAll('.share-opt').forEach(btn=>{
+    btn.addEventListener('click',async()=>{
+      const action=btn.dataset.action;
+      if(action==='native'&&navigator.share){
+        try{await navigator.share({title:'MAXI SCHOOL OF MUSIC',text:shareText,url:shareUrl})}catch(e){}
+      } else if(action==='native'){
+        // Fallback: copy
+        await navigator.clipboard?.writeText(shareUrl);
+        btn.textContent='✅ '+(i18n[currentLang]?.shareCopied||'Copied!');
+      } else if(action==='copy'){
+        await navigator.clipboard?.writeText(shareUrl);
+        btn.textContent='✅ '+(i18n[currentLang]?.shareCopied||'Copied!');
+      } else if(action==='whatsapp'){
+        window.open('https://wa.me/?text='+encodeURIComponent(shareText+' '+shareUrl),'_blank');
+      }
+      setTimeout(()=>{popup.classList.remove('show');setTimeout(()=>popup.remove(),300)},1500);
+    });
+  });
+
+  // Close on outside click
+  setTimeout(()=>{
+    document.addEventListener('click',function closer(ev){
+      if(!popup.contains(ev.target)){popup.classList.remove('show');setTimeout(()=>popup.remove(),300);document.removeEventListener('click',closer)}
+    });
+  },100);
+}
 
 // ============================================================
 // DINO WANDERING + SPORADIC JUMP
