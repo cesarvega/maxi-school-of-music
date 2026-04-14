@@ -1014,19 +1014,19 @@
       <p class="section-sub" data-i18n="gameSub">Corre, salta y recolecta huevos! Esquiva los obstaculos!</p>
       <div class="game-wrap">
         <div class="game-hud">
-          <div class="hud-item"><span>\u{1F95A}</span><span id="game-eggs">0</span></div>
-          <div class="hud-item"><span>\u{1F3C6}</span><span id="game-score">0</span></div>
-          <div class="hud-item"><span>\u{1F525}</span><span id="game-best">0</span></div>
+          <div class="hud-item"><span>&#129370;</span><span id="game-eggs">0</span></div>
+          <div class="hud-item"><span>&#127942;</span><span id="game-score">0</span></div>
+          <div class="hud-item"><span>&#128293;</span><span id="game-best">0</span></div>
         </div>
         <canvas id="game-canvas" width="400" height="500"></canvas>
         <div class="game-controls">
-          <button class="game-btn" id="game-left">\u25C0</button>
+          <button class="game-btn" id="game-left">&#9664;</button>
           <button class="game-btn" id="game-jump" data-i18n="gameJump">SALTAR</button>
-          <button class="game-btn" id="game-right">\u25B6</button>
+          <button class="game-btn" id="game-right">&#9654;</button>
         </div>
         <div class="game-overlay" id="game-overlay">
           <div class="game-msg">
-            <h3 id="game-msg-title" data-i18n="gamePlay">\u{1F996} Dino Runner</h3>
+            <h3 id="game-msg-title" data-i18n="gamePlay">&#129430; Dino Runner</h3>
             <p id="game-msg-sub" data-i18n="gameInstr">Usa las flechas o desliza. Toca SALTAR para brincar.</p>
             <button class="btn-3d lava" id="game-start" data-i18n="gameStart">JUGAR</button>
           </div>
@@ -1038,16 +1038,12 @@
   <!-- CONTACT -->
   <div class="page" id="page-contact">
     <div class="section-wrap">
-      <h2 class="section-title" data-i18n="contactTitle">Unete a la Manada</h2>
-      <p class="section-sub" data-i18n="contactSub">Primera clase de prueba GRATIS!</p>
+      <h2 class="section-title" data-i18n="contactTitle">Lista de Espera</h2>
+      <p class="section-sub" data-i18n="contactSub">Aun no estamos abiertos! Dejanos tu email y te avisaremos cuando comencemos las clases. &#129430;</p>
       <div class="contact-wrap">
         <form class="contact-form" onsubmit="return false">
-          <input type="text" data-i18n-ph="phName" placeholder="Nombre del pequeno dino" />
-          <input type="number" data-i18n-ph="phAge" placeholder="Edad" min="3" max="18" />
-          <input type="text" data-i18n-ph="phParent" placeholder="Nombre del padre/madre" />
-          <input type="tel" data-i18n-ph="phPhone" placeholder="Telefono" />
-          <textarea data-i18n-ph="phMsg" placeholder="Que instrumento quiere tocar? Tiene experiencia?"></textarea>
-          <button class="btn-3d lava" type="submit" data-i18n="sendBtn">Enviar Rugido</button>
+          <input type="email" data-i18n-ph="phEmail" placeholder="Tu email" required />
+          <button class="btn-3d lava" type="submit" data-i18n="sendBtn">Unirme a la Lista</button>
         </form>
       </div>
     </div>
@@ -1140,7 +1136,7 @@ const i18n={
     mon:'LUN',tue:'MAR',wed:'MIE',thu:'JUE',fri:'VIE',sat:'SAB',
     friClass:'Dino-Jam Grupal (todos!)',satClass:'Todas las clases',
     reserveBtn:'Reservar Clase de Prueba',
-    contactTitle:'Unete a la Manada',contactSub:'Primera clase de prueba GRATIS!',
+    contactTitle:'Lista de Espera',contactSub:'Aun no estamos abiertos! Dejanos tu email y te avisaremos cuando comencemos las clases. \u{1F996}',phEmail:'Tu email',
     sendBtn:'Enviar Rugido',
     phName:'Nombre del pequeno dino',phAge:'Edad',phParent:'Nombre del padre/madre',phPhone:'Telefono',phMsg:'Que instrumento quiere tocar? Tiene experiencia?',
     settingsLang:'\u2699 Idioma',settingsLangSub:'Elige tu idioma',
@@ -1503,18 +1499,20 @@ document.querySelector('.contact-form').addEventListener('submit',function(e){
   e.preventDefault();
   const form=this;
   const btn=form.querySelector('button');
-  const inputs=form.querySelectorAll('input,textarea');
+  const emailInput=form.querySelector('input[type="email"]');
+  const email=emailInput?.value.trim()||'';
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){
+    emailInput.focus();
+    return;
+  }
   const data={
-    childName:inputs[0]?.value||'',
-    age:inputs[1]?.value||'',
-    parentName:inputs[2]?.value||'',
-    phone:inputs[3]?.value||'',
-    message:inputs[4]?.value||'',
+    email,
     lang:currentLang,
-    createdAt:new Date().toISOString()
+    createdAt:new Date().toISOString(),
+    source:'waitlist'
   };
   breakButton(btn,async()=>{
-    try{await db.collection('contacts').add(data)}catch(err){console.warn('Firestore contact save failed',err)}
+    try{await db.collection('waitlist').add(data)}catch(err){console.warn('Firestore waitlist save failed',err)}
     alert(i18n[currentLang].alertSent);
     form.reset();
   });
