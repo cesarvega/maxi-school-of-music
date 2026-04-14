@@ -961,6 +961,20 @@
 <button class="roar-fab" id="roar-fab" title="ROAR!">&#129430;</button>
 
 <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+<script>
+// Firebase init
+firebase.initializeApp({
+  apiKey:"AIzaSyDepPc63CG90Wo78WG1drJFbh4ApPaZ0gM",
+  authDomain:"maxi-school-of-music.firebaseapp.com",
+  projectId:"maxi-school-of-music",
+  storageBucket:"maxi-school-of-music.firebasestorage.app",
+  messagingSenderId:"198046877480",
+  appId:"1:198046877480:web:78ff021046a428de8db21d"
+});
+const db=firebase.firestore();
+</script>
 <script>
 // ============================================================
 // THEME SYSTEM
@@ -1389,8 +1403,24 @@ document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',(
 document.getElementById('btn-explore').addEventListener('click',function(){breakButton(this,()=>goTo('classes'))});
 document.getElementById('btn-reserve').addEventListener('click',function(){breakButton(this,()=>goTo('contact'))});
 document.querySelector('.contact-form').addEventListener('submit',function(e){
-  e.preventDefault();const btn=this.querySelector('button');
-  breakButton(btn,()=>{alert(i18n[currentLang].alertSent);this.reset()});
+  e.preventDefault();
+  const form=this;
+  const btn=form.querySelector('button');
+  const inputs=form.querySelectorAll('input,textarea');
+  const data={
+    childName:inputs[0]?.value||'',
+    age:inputs[1]?.value||'',
+    parentName:inputs[2]?.value||'',
+    phone:inputs[3]?.value||'',
+    message:inputs[4]?.value||'',
+    lang:currentLang,
+    createdAt:new Date().toISOString()
+  };
+  breakButton(btn,async()=>{
+    try{await db.collection('contacts').add(data)}catch(err){console.warn('Firestore contact save failed',err)}
+    alert(i18n[currentLang].alertSent);
+    form.reset();
+  });
 });
 
 // ============================================================
@@ -1887,8 +1917,26 @@ function showQRPopup(){
 // ============================================================
 // BOOKING CALENDAR SYSTEM
 // ============================================================
-const bookings=JSON.parse(localStorage.getItem('dinomusic-bookings')||'{}');
-function saveBookings(){localStorage.setItem('dinomusic-bookings',JSON.stringify(bookings))}
+let bookings={};
+// Load bookings from Firestore
+async function loadBookings(){
+  try{
+    const snap=await db.collection('bookings').get();
+    bookings={};
+    snap.forEach(doc=>{bookings[doc.id]=doc.data()});
+  }catch(e){console.warn('Firestore read failed, using local cache',e);
+    bookings=JSON.parse(localStorage.getItem('dinomusic-bookings')||'{}');
+  }
+}
+async function saveBooking(dateStr,time,data){
+  bookings[dateStr]=bookings[dateStr]||{};
+  bookings[dateStr][time]=data;
+  // Save to Firestore
+  try{await db.collection('bookings').doc(dateStr).set(bookings[dateStr])}
+  catch(e){console.warn('Firestore write failed',e)}
+  // Also cache locally as fallback
+  localStorage.setItem('dinomusic-bookings',JSON.stringify(bookings));
+}
 
 let calYear,calMonth;
 const today=new Date();
@@ -2015,7 +2063,7 @@ document.getElementById('slot-overlay').addEventListener('click',e=>{
 });
 
 // Confirm booking
-document.getElementById('book-confirm').addEventListener('click',function(){
+document.getElementById('book-confirm').addEventListener('click',async function(){
   const name=document.getElementById('book-name').value.trim();
   const instr=document.getElementById('book-instrument').value;
   if(!name||!instr||!selectedSlotTime) return;
@@ -2029,12 +2077,11 @@ document.getElementById('book-confirm').addEventListener('click',function(){
   // We need to store the dateStr - let's use a data attribute on overlay
   const dateStr=overlay.dataset.currentDate;
 
-  if(!bookings[dateStr]) bookings[dateStr]={};
-  bookings[dateStr][selectedSlotTime]={name,instrument:instr,bookedAt:new Date().toISOString()};
-  saveBookings();
+  await saveBooking(dateStr,selectedSlotTime,{name,instrument:instr,bookedAt:new Date().toISOString()});
 
   // Close and refresh
   overlay.classList.remove('open');
+  await loadBookings();
   renderCalendar();
 
   // Toast
@@ -2055,14 +2102,15 @@ openSlotPanel=function(dateStr,dow){
   origOpenSlot(dateStr,dow);
 };
 
-document.getElementById('cal-prev').addEventListener('click',()=>{
-  calMonth--;if(calMonth<0){calMonth=11;calYear--}renderCalendar();
+document.getElementById('cal-prev').addEventListener('click',async()=>{
+  calMonth--;if(calMonth<0){calMonth=11;calYear--}await loadBookings();renderCalendar();
 });
-document.getElementById('cal-next').addEventListener('click',()=>{
-  calMonth++;if(calMonth>11){calMonth=0;calYear++}renderCalendar();
+document.getElementById('cal-next').addEventListener('click',async()=>{
+  calMonth++;if(calMonth>11){calMonth=0;calYear++}await loadBookings();renderCalendar();
 });
 
-renderCalendar();
+// Initial load from Firestore
+loadBookings().then(()=>renderCalendar());
 </script>
 </body>
 </html>
