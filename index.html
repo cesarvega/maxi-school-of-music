@@ -483,11 +483,11 @@
     .hud-item{display:flex;align-items:center;gap:6px;font-weight:700;font-size:clamp(14px,3.5vw,18px);color:var(--accent2)}
     .hud-item span:first-child{font-size:clamp(18px,4vw,22px)}
     #game-canvas{
-      display:block;width:100%;max-width:400px;height:auto;
-      border-radius:16px;background:linear-gradient(180deg,#4a7d3a 0%,#2d5a24 100%);
+      display:block;width:100%;max-width:600px;height:auto;aspect-ratio:3/1;
+      border-radius:16px;background:linear-gradient(180deg,#7dd3fc 0%,#bae6fd 60%,#fef3c7 100%);
       border:3px solid var(--accent-dark);
       box-shadow:0 8px 30px rgba(0,0,0,.4);
-      touch-action:none;
+      touch-action:none;cursor:pointer;
     }
     .game-controls{
       display:flex;gap:8px;margin-top:10px;justify-content:center;
@@ -1018,11 +1018,9 @@
           <div class="hud-item"><span>&#127942;</span><span id="game-score">0</span></div>
           <div class="hud-item"><span>&#128293;</span><span id="game-best">0</span></div>
         </div>
-        <canvas id="game-canvas" width="400" height="500"></canvas>
+        <canvas id="game-canvas" width="600" height="200"></canvas>
         <div class="game-controls">
-          <button class="game-btn" id="game-left">&#9664;</button>
           <button class="game-btn" id="game-jump" data-i18n="gameJump">SALTAR</button>
-          <button class="game-btn" id="game-right">&#9654;</button>
         </div>
         <div class="game-overlay" id="game-overlay">
           <div class="game-msg">
@@ -2208,22 +2206,24 @@ document.getElementById('cal-next').addEventListener('click',async()=>{
 loadBookings().then(()=>renderCalendar());
 
 // ============================================================
-// DINO RUNNER GAME (Sonic-style)
+// DINO RUNNER GAME (Chrome Dino style)
 // ============================================================
 (function(){
   const cv=document.getElementById('game-canvas');
   const cx=cv.getContext('2d');
-  const W=400,H=500;
+  const W=600,H=200;
   cv.width=W;cv.height=H;
-
-  const LANES=[W*.25,W*.5,W*.75];
+  const GROUND=H-30;
+  const DINO_X=60;
+  const DINO_SIZE=40;
+  const GRAVITY=.75;
+  const JUMP_V=-13;
   let state={
     running:false,
-    dinoLane:1,
-    dinoY:0, // vertical offset for jump
+    dinoY:0, // offset from ground (0=on ground, negative=jumping up)
     vy:0,
     onGround:true,
-    speed:4,
+    speed:6,
     distance:0,
     eggs:0,
     score:0,
@@ -2294,79 +2294,98 @@ loadBookings().then(()=>renderCalendar());
   }
 
   // ---- DRAWING ----
-  function drawDino(x,y,size){
-    cx.save();
-    cx.translate(x,y-state.dinoY);
+  function drawDino(){
+    const y=GROUND-DINO_SIZE+state.dinoY;
+    cx.save();cx.translate(DINO_X,y);
     // Shadow
-    cx.fillStyle='rgba(0,0,0,.3)';
-    cx.beginPath();cx.ellipse(0,size*.5,size*.35,size*.08,0,0,Math.PI*2);cx.fill();
+    cx.fillStyle='rgba(0,0,0,.15)';
+    cx.beginPath();cx.ellipse(DINO_SIZE/2,DINO_SIZE-2,DINO_SIZE*.4,3,0,0,Math.PI*2);cx.fill();
     // Body
-    cx.fillStyle='#4ade80';
-    cx.beginPath();cx.ellipse(0,10,size*.28,size*.3,0,0,Math.PI*2);cx.fill();
-    // Head
-    cx.beginPath();cx.arc(size*.18,-size*.1,size*.22,0,Math.PI*2);cx.fillStyle='#4ade80';cx.fill();
-    // Eye
-    cx.fillStyle='#fff';cx.beginPath();cx.arc(size*.25,-size*.15,size*.07,0,Math.PI*2);cx.fill();
-    cx.fillStyle='#000';cx.beginPath();cx.arc(size*.27,-size*.15,size*.04,0,Math.PI*2);cx.fill();
-    // Spikes
-    cx.fillStyle='#facc15';
-    cx.beginPath();cx.moveTo(-size*.2,-size*.05);cx.lineTo(-size*.1,-size*.25);cx.lineTo(0,-size*.05);cx.fill();
-    // Legs (animated)
-    const legPhase=state.running?Math.sin(state.distance*.3):0;
     cx.fillStyle='#16a34a';
-    cx.fillRect(-size*.15+legPhase*3,size*.2,size*.12,size*.2);
-    cx.fillRect(size*.03-legPhase*3,size*.2,size*.12,size*.2);
+    cx.fillRect(6,16,26,22);
+    // Head
+    cx.fillStyle='#4ade80';
+    cx.fillRect(24,4,18,18);
+    cx.fillRect(38,10,6,8);
+    // Eye
+    cx.fillStyle='#fff';cx.fillRect(34,8,4,4);
+    cx.fillStyle='#000';cx.fillRect(35,9,2,2);
+    // Mouth
+    cx.fillStyle='#1a3a2a';cx.fillRect(40,15,4,1);
+    // Back spikes
+    cx.fillStyle='#facc15';
+    cx.fillRect(10,14,2,4);cx.fillRect(16,12,2,6);cx.fillRect(22,13,2,5);
+    // Tail
+    cx.fillStyle='#16a34a';cx.fillRect(-2,18,8,6);
+    // Legs (animated)
+    const legPhase=state.running&&state.onGround?Math.floor(state.distance/6)%2:0;
+    cx.fillStyle='#15803d';
+    if(legPhase){
+      cx.fillRect(10,38,5,4);cx.fillRect(22,36,5,4);
+    }else{
+      cx.fillRect(10,36,5,4);cx.fillRect(22,38,5,4);
+    }
     cx.restore();
   }
 
-  function drawBg(){
-    // Scrolling ground lines
-    cx.fillStyle='#3a6d2a';
-    for(let i=0;i<5;i++){
-      const y=(state.bgOffset+i*120)%H;
-      cx.fillRect(0,y,W,4);
+  function drawGround(){
+    // Ground line
+    cx.strokeStyle='#5a3a1a';cx.lineWidth=2;
+    cx.beginPath();cx.moveTo(0,GROUND);cx.lineTo(W,GROUND);cx.stroke();
+    // Ground dots (dirt)
+    cx.fillStyle='#a3a3a3';
+    for(let i=0;i<W/30;i++){
+      const x=(i*30-state.bgOffset)%W;
+      cx.fillRect(x,GROUND+5,3,2);
+      cx.fillRect(x+15,GROUND+12,2,2);
     }
-    // Side jungle
-    cx.fillStyle='rgba(0,0,0,.2)';
-    for(let i=0;i<8;i++){
-      const y=(state.bgOffset*2+i*80)%(H+80)-40;
-      cx.beginPath();cx.arc(20,y,30,0,Math.PI*2);cx.fill();
-      cx.beginPath();cx.arc(W-20,y+40,28,0,Math.PI*2);cx.fill();
-    }
-    // Lane dividers
-    cx.strokeStyle='rgba(255,255,255,.15)';cx.lineWidth=2;cx.setLineDash([10,10]);
-    cx.beginPath();cx.moveTo(W/3,0);cx.lineTo(W/3,H);cx.stroke();
-    cx.beginPath();cx.moveTo(2*W/3,0);cx.lineTo(2*W/3,H);cx.stroke();
-    cx.setLineDash([]);
   }
 
-  function drawObstacle(o){
-    cx.save();cx.translate(o.x,o.y);
-    // Rock obstacle
-    cx.fillStyle='#7c6f5b';
-    cx.beginPath();
-    cx.moveTo(-20,15);cx.lineTo(-15,-20);cx.lineTo(10,-25);cx.lineTo(22,-5);cx.lineTo(18,18);cx.closePath();
-    cx.fill();
-    cx.fillStyle='#a0937a';
-    cx.beginPath();cx.arc(-5,-10,6,0,Math.PI*2);cx.fill();
+  function drawClouds(){
+    cx.fillStyle='rgba(255,255,255,.85)';
+    state.clouds.forEach(c=>{
+      cx.beginPath();
+      cx.arc(c.x,c.y,12,0,Math.PI*2);
+      cx.arc(c.x+14,c.y,10,0,Math.PI*2);
+      cx.arc(c.x-12,c.y+3,9,0,Math.PI*2);
+      cx.arc(c.x+24,c.y+4,8,0,Math.PI*2);
+      cx.fill();
+    });
+  }
+
+  function drawCactus(o){
+    cx.save();cx.translate(o.x,GROUND-o.h);
+    cx.fillStyle='#166534';
+    cx.fillRect(4,0,10,o.h);
+    // Arms
+    if(o.double){
+      cx.fillRect(0,o.h*.3,4,o.h*.5);
+      cx.fillRect(14,o.h*.2,4,o.h*.6);
+    }
+    // Spines
+    cx.fillStyle='#052e16';
+    for(let i=0;i<o.h/8;i++){
+      cx.fillRect(3,i*8+4,1,3);
+      cx.fillRect(14,i*8+6,1,3);
+    }
     cx.restore();
   }
 
   function drawEgg(e){
-    cx.save();cx.translate(e.x,e.y);
-    const pulse=1+Math.sin(Date.now()*.008+e.x)*.1;
+    if(e.taken)return;
+    cx.save();cx.translate(e.x,GROUND-e.y);
+    const pulse=1+Math.sin(Date.now()*.008)*.1;
     cx.scale(pulse,pulse);
     // Glow
-    const g=cx.createRadialGradient(0,0,0,0,0,20);
+    const g=cx.createRadialGradient(0,0,0,0,0,18);
     g.addColorStop(0,'rgba(250,204,21,.6)');g.addColorStop(1,'transparent');
-    cx.fillStyle=g;cx.fillRect(-20,-20,40,40);
+    cx.fillStyle=g;cx.fillRect(-18,-18,36,36);
     // Egg
     cx.fillStyle='#fde68a';
-    cx.beginPath();cx.ellipse(0,0,10,13,0,0,Math.PI*2);cx.fill();
-    // Spots
+    cx.beginPath();cx.ellipse(0,0,8,11,0,0,Math.PI*2);cx.fill();
     cx.fillStyle='#fb923c';
-    cx.beginPath();cx.arc(-3,-3,2.5,0,Math.PI*2);cx.fill();
-    cx.beginPath();cx.arc(3,3,2,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(-2,-2,2,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(2,3,1.5,0,Math.PI*2);cx.fill();
     cx.restore();
   }
 
@@ -2382,21 +2401,32 @@ loadBookings().then(()=>renderCalendar());
   }
 
   function spawn(){
-    if(Math.random()<.025+state.speed*.002){
-      const lane=Math.floor(Math.random()*3);
-      state.obstacles.push({x:LANES[lane],y:-30,lane});
+    const last=state.obstacles[state.obstacles.length-1];
+    const minGap=180;
+    if(!last||W-last.x>minGap+Math.random()*160){
+      if(Math.random()<.04){
+        state.obstacles.push({x:W+20,h:25+Math.random()*25,double:Math.random()<.3});
+      }
     }
-    if(Math.random()<.04){
-      const lane=Math.floor(Math.random()*3);
-      state.collectibles.push({x:LANES[lane],y:-20,lane,taken:false});
+    // Eggs at varying heights
+    const lastE=state.collectibles[state.collectibles.length-1];
+    if(!lastE||W-lastE.x>150+Math.random()*200){
+      if(Math.random()<.02){
+        state.collectibles.push({x:W+20,y:30+Math.random()*50,taken:false});
+      }
+    }
+    // Clouds
+    if(Math.random()<.005){
+      state.clouds.push({x:W+30,y:20+Math.random()*40,speed:.5+Math.random()});
     }
   }
 
   function reset(){
-    state.dinoLane=1;state.dinoY=0;state.vy=0;state.onGround=true;
-    state.speed=4;state.distance=0;state.eggs=0;state.score=0;
+    state.dinoY=0;state.vy=0;state.onGround=true;
+    state.speed=6;state.distance=0;state.eggs=0;state.score=0;
     state.obstacles=[];state.collectibles=[];state.particles=[];
-    state.combo=0;state.flash=0;
+    state.clouds=[{x:100,y:30,speed:.5},{x:300,y:50,speed:.7}];
+    state.combo=0;state.flash=0;state.bgOffset=0;
     updateHud();
   }
 
@@ -2406,67 +2436,65 @@ loadBookings().then(()=>renderCalendar());
   }
 
   function jump(){
-    if(!state.running||!state.onGround)return;
-    state.vy=-14;state.onGround=false;
-    jumpFx();
-  }
-
-  function moveLane(dir){
-    if(!state.running)return;
-    state.dinoLane=Math.max(0,Math.min(2,state.dinoLane+dir));
-    // whoosh sound
-    if(!isMuted){
-      if(ac.state==='suspended')ac.resume();
-      const n=ac.currentTime;
-      const o=ac.createOscillator();o.type='sine';
-      o.frequency.setValueAtTime(600,n);o.frequency.exponentialRampToValueAtTime(200,n+.1);
-      const g=ac.createGain();g.gain.setValueAtTime(.05,n);g.gain.exponentialRampToValueAtTime(.01,n+.15);
-      o.connect(g).connect(ac.dest);o.start(n);o.stop(n+.15);
+    if(!state.running){
+      if(!state.gameOverJustHit)start();
+      return;
     }
+    if(!state.onGround)return;
+    state.vy=JUMP_V;state.onGround=false;
+    jumpFx();
   }
 
   function tick(){
     if(!state.running)return;
     // Physics
-    state.vy+=.8;
-    state.dinoY-=state.vy;
-    if(state.dinoY<=0){state.dinoY=0;state.vy=0;state.onGround=true}
+    state.vy+=GRAVITY;
+    state.dinoY+=state.vy;
+    if(state.dinoY>=0){state.dinoY=0;state.vy=0;state.onGround=true}
 
     // Movement
     state.distance+=state.speed;
-    state.bgOffset=(state.bgOffset+state.speed)%H;
-    state.speed=Math.min(9,4+state.distance*.0005);
+    state.bgOffset=(state.bgOffset+state.speed)%W;
+    state.speed=Math.min(12,6+state.distance*.0003);
 
     // Spawn
     spawn();
 
     // Update objects
-    state.obstacles.forEach(o=>o.y+=state.speed);
-    state.collectibles.forEach(e=>e.y+=state.speed);
-    state.obstacles=state.obstacles.filter(o=>o.y<H+40);
-    state.collectibles=state.collectibles.filter(e=>e.y<H+40&&!e.taken);
+    state.obstacles.forEach(o=>o.x-=state.speed);
+    state.collectibles.forEach(e=>e.x-=state.speed);
+    state.clouds.forEach(c=>c.x-=c.speed);
+    state.obstacles=state.obstacles.filter(o=>o.x>-40);
+    state.collectibles=state.collectibles.filter(e=>e.x>-20&&!e.taken);
+    state.clouds=state.clouds.filter(c=>c.x>-50);
 
-    // Dino position
-    const dinoX=LANES[state.dinoLane];
-    const dinoY=H-80;
+    // Dino bounds (hitbox slightly smaller than visual)
+    const dinoLeft=DINO_X+6, dinoRight=DINO_X+38;
+    const dinoTop=GROUND-DINO_SIZE+state.dinoY+4;
+    const dinoBottom=GROUND+state.dinoY;
 
-    // Collision
+    // Collision with cactus
     state.obstacles.forEach(o=>{
-      if(Math.abs(o.x-dinoX)<40&&Math.abs(o.y-dinoY+state.dinoY)<30&&state.dinoY<40){
+      const cLeft=o.x+2, cRight=o.x+16;
+      const cTop=GROUND-o.h;
+      if(dinoRight>cLeft&&dinoLeft<cRight&&dinoBottom>cTop){
         gameOver();
       }
     });
+
+    // Collect eggs
     state.collectibles.forEach(e=>{
-      if(!e.taken&&Math.abs(e.x-dinoX)<30&&Math.abs(e.y-dinoY+state.dinoY)<35){
+      if(e.taken)return;
+      const ex=e.x, ey=GROUND-e.y;
+      if(Math.abs(ex-DINO_X-20)<22&&Math.abs(ey-(dinoTop+DINO_SIZE/2))<22){
         e.taken=true;
         state.eggs++;state.combo++;
         state.score+=10*Math.min(state.combo,5);
         ring(800+state.combo*100,1200+state.combo*100);
         if(state.combo>2)comboFx(state.combo-2);
-        // Particles
         for(let i=0;i<8;i++){
           state.particles.push({
-            x:e.x,y:e.y,
+            x:ex,y:ey,
             vx:(Math.random()-.5)*6,vy:-Math.random()*5,
             life:30,size:3+Math.random()*3,
             color:['#facc15','#fb923c','#fde68a'][0|Math.random()*3]
@@ -2478,20 +2506,18 @@ loadBookings().then(()=>renderCalendar());
 
     // Score from distance
     if(state.distance%30===0){state.score+=1;updateHud()}
-    // Level 2 transition at 500 points
     if(state.score>=500&&currentLevel===1)switchToLevel2();
-    // Reset combo if no egg collected recently
-    if(state.distance%150===0)state.combo=Math.max(0,state.combo-1);
+    if(state.distance%200===0)state.combo=Math.max(0,state.combo-1);
 
     // Render
     cx.clearRect(0,0,W,H);
-    drawBg();
-    state.obstacles.forEach(drawObstacle);
+    drawClouds();
+    drawGround();
+    state.obstacles.forEach(drawCactus);
     state.collectibles.forEach(drawEgg);
-    drawDino(dinoX,dinoY,60);
+    drawDino();
     drawParticles();
 
-    // Flash on hit
     if(state.flash>0){
       cx.fillStyle=`rgba(255,0,0,${state.flash})`;
       cx.fillRect(0,0,W,H);
@@ -2512,7 +2538,6 @@ loadBookings().then(()=>renderCalendar());
     currentLevel=2;
     bgMusic.pause();
     if(!isMuted&&state.running){bgMusic2.currentTime=0;bgMusic2.play().catch(()=>{})}
-    // Visual feedback
     for(let i=0;i<20;i++){
       state.particles.push({
         x:Math.random()*W,y:Math.random()*H,
@@ -2530,11 +2555,11 @@ loadBookings().then(()=>renderCalendar());
     bgMusic.pause();bgMusic.currentTime=0;
     bgMusic2.pause();bgMusic2.currentTime=0;
     currentLevel=1;
-    if(state.score>best){best=state.score;localStorage.setItem('dino-runner-best',best);document.getElementById('game-best').textContent=best;}
+    if(state.score>best){best=state.score;localStorage.setItem('dino-runner-best',best);document.getElementById('game-best').textContent=best}
     const ov=document.getElementById('game-overlay');
     ov.classList.remove('hidden');
     document.getElementById('game-msg-title').textContent='\u{1F6A8} Game Over!';
-    document.getElementById('game-msg-sub').textContent='Huevos: '+state.eggs+' | Puntos: '+state.score;
+    document.getElementById('game-msg-sub').textContent='Puntos: '+state.score+' | Huevos: '+state.eggs;
     document.getElementById('game-start').textContent='JUGAR DE NUEVO';
   }
 
@@ -2542,55 +2567,47 @@ loadBookings().then(()=>renderCalendar());
     reset();
     state.running=true;
     document.getElementById('game-overlay').classList.add('hidden');
-    if(!isMuted){
-      bgMusic.currentTime=0;
-      bgMusic.play().catch(()=>{});
-    }
+    if(!isMuted){bgMusic.currentTime=0;bgMusic.play().catch(()=>{})}
+    if(ac.state==='suspended')ac.resume();
     tick();
   }
 
-  // Sync music with mute button
-  const origMuteBtn=document.getElementById('mute-fab');
-  origMuteBtn.addEventListener('click',()=>{
+  // Sync music with mute
+  document.getElementById('mute-fab').addEventListener('click',()=>{
     setTimeout(()=>{
       if(isMuted){bgMusic.pause();bgMusic2.pause()}
-      else if(state.running){
-        (currentLevel===2?bgMusic2:bgMusic).play().catch(()=>{});
-      }
+      else if(state.running){(currentLevel===2?bgMusic2:bgMusic).play().catch(()=>{})}
     },50);
   });
 
   document.getElementById('game-start').addEventListener('click',start);
-  document.getElementById('game-left').addEventListener('click',()=>moveLane(-1));
-  document.getElementById('game-right').addEventListener('click',()=>moveLane(1));
   document.getElementById('game-jump').addEventListener('click',jump);
 
-  // Keyboard
+  // Keyboard: space/up = jump or start
   document.addEventListener('keydown',(e)=>{
-    if(document.getElementById('page-game').classList.contains('active')){
-      if(e.key==='ArrowLeft')moveLane(-1);
-      if(e.key==='ArrowRight')moveLane(1);
-      if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();jump()}
+    if(!document.getElementById('page-game').classList.contains('active'))return;
+    if(e.key===' '||e.key==='ArrowUp'||e.key==='w'){
+      e.preventDefault();
+      if(!state.running)start();
+      else jump();
     }
   });
 
-  // Touch swipe
-  let tx=0,ty=0;
+  // Click/tap on canvas = jump (or start)
+  cv.addEventListener('click',()=>{
+    if(!state.running)start();
+    else jump();
+  });
   cv.addEventListener('touchstart',(e)=>{
-    tx=e.touches[0].clientX;ty=e.touches[0].clientY;
-  },{passive:true});
-  cv.addEventListener('touchend',(e)=>{
-    const dx=e.changedTouches[0].clientX-tx;
-    const dy=e.changedTouches[0].clientY-ty;
-    if(Math.abs(dx)>Math.abs(dy)){
-      if(dx>30)moveLane(1);else if(dx<-30)moveLane(-1);
-    } else if(dy<-30){jump()}
-  },{passive:true});
+    e.preventDefault();
+    if(!state.running)start();
+    else jump();
+  },{passive:false});
 
   // Initial draw
   cx.clearRect(0,0,W,H);
-  drawBg();
-  drawDino(LANES[1],H-80,60);
+  drawGround();
+  drawDino();
 })();
 </script>
 </body>
