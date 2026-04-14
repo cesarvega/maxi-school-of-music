@@ -161,6 +161,18 @@
     .settings-panel.open{right:0}
     .settings-panel h3{font-size:1.3rem;margin-bottom:6px;color:var(--accent)}
     .settings-panel .settings-sub{font-size:.85rem;color:var(--text-muted);margin-bottom:24px}
+    .settings-panel .divider{height:1px;background:rgba(255,255,255,.08);margin:24px 0}
+    .lang-grid{display:grid;grid-template-columns:repeat(1,1fr);gap:8px;margin-bottom:8px}
+    .lang-btn{
+      font-family:'Fredoka',sans-serif;
+      padding:10px 14px;border-radius:12px;border:2px solid rgba(255,255,255,.08);
+      cursor:pointer;text-align:left;transition:all .2s ease;
+      font-size:14px;font-weight:600;color:#fff;background:rgba(255,255,255,.03);
+      display:flex;align-items:center;gap:10px;
+    }
+    .lang-btn:hover{background:rgba(255,255,255,.07);border-color:rgba(255,255,255,.15)}
+    .lang-btn.active{border-color:var(--accent);background:rgba(255,255,255,.06)}
+    .lang-btn .flag{font-size:20px}
     .theme-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
     .theme-btn{
       font-family:'Fredoka',sans-serif;
@@ -329,11 +341,11 @@
 <canvas id="bg-canvas"></canvas>
 <div class="content">
   <div class="nav">
-    <button class="active" data-page="home">Inicio</button>
-    <button data-page="classes">Clases</button>
-    <button data-page="soundboard">Dino-Jams</button>
-    <button data-page="schedule">Horarios</button>
-    <button data-page="contact">Contacto</button>
+    <button class="active" data-page="home" data-i18n="navHome">Inicio</button>
+    <button data-page="classes" data-i18n="navClasses">Clases</button>
+    <button data-page="soundboard" data-i18n="navSound">Dino-Jams</button>
+    <button data-page="schedule" data-i18n="navSchedule">Horarios</button>
+    <button data-page="contact" data-i18n="navContact">Contacto</button>
     <button class="hamburger" id="hamburger-btn" aria-label="Settings">
       <span></span><span></span><span></span>
     </button>
@@ -400,6 +412,16 @@
         <div class="check">&#10003;</div>
       </button>
     </div>
+    <div class="divider"></div>
+    <h3 data-i18n="settingsLang">&#9881; Idioma</h3>
+    <p class="settings-sub" data-i18n="settingsLangSub">Elige tu idioma</p>
+    <div class="lang-grid">
+      <button class="lang-btn" data-lang="es"><span class="flag">&#127466;&#127480;</span>Espanol</button>
+      <button class="lang-btn" data-lang="en"><span class="flag">&#127468;&#127463;</span>English</button>
+      <button class="lang-btn" data-lang="fr"><span class="flag">&#127467;&#127479;</span>Francais</button>
+      <button class="lang-btn" data-lang="it"><span class="flag">&#127470;&#127481;</span>Italiano</button>
+      <button class="lang-btn" data-lang="pt"><span class="flag">&#127463;&#127479;</span>Portugues</button>
+    </div>
   </div>
 
   <!-- HOME -->
@@ -411,9 +433,9 @@
         <span>&#129429;</span>
       </div>
       <h1>MAXI SCHOOL OF MUSIC</h1>
-      <div class="tagline">&#127925; Donde los dinosaurios hacen musica!</div>
-      <p>Clases de musica para ninos con el estilo mas prehistorico y divertido. Aprende instrumentos mientras exploras el mundo de los dinosaurios!</p>
-      <button class="btn-3d lava" id="btn-explore">Explorar Clases</button>
+      <div class="tagline" data-i18n="tagline">&#127925; Donde los dinosaurios hacen musica!</div>
+      <p data-i18n="heroDesc">Clases de musica para ninos con el estilo mas prehistorico y divertido. Aprende instrumentos mientras exploras el mundo de los dinosaurios!</p>
+      <button class="btn-3d lava" id="btn-explore" data-i18n="exploreBtn">Explorar Clases</button>
     </div>
     <div class="ticker">
       <div class="ticker-inner">
@@ -440,44 +462,44 @@
   <!-- CLASSES -->
   <div class="page" id="page-classes">
     <div class="section-wrap">
-      <h2 class="section-title">Clases Prehistoricas</h2>
-      <p class="section-sub">Cada clase combina musica real con aventura dinosaurica!</p>
+      <h2 class="section-title" data-i18n="classesTitle">Clases Prehistoricas</h2>
+      <p class="section-sub" data-i18n="classesSub">Cada clase combina musica real con aventura dinosaurica!</p>
       <div class="class-grid">
         <div class="class-card">
           <span class="emoji">&#129430;&#127926;</span>
           <h3>Dino-Marimba</h3>
-          <span class="age">Desde 3 anos</span>
-          <p>Golpea las teclas de piedra como un T-Rex! Melodia y ritmo con baquetas prehistoricas. El instrumento mas divertido para empezar.</p>
+          <span class="age" data-i18n="age3">Desde 3 anos</span>
+          <p data-i18n="marimbaDesc">Golpea las teclas de piedra como un T-Rex! Melodia y ritmo con baquetas prehistoricas. El instrumento mas divertido para empezar.</p>
         </div>
         <div class="class-card">
           <span class="emoji">&#129429;&#129345;</span>
           <h3>Bronto-Congos</h3>
-          <span class="age">Desde 3 anos</span>
-          <p>Percusion salvaje con las manos! Ritmos tribales que hacen temblar la selva. Solo necesitas tus manitas.</p>
+          <span class="age" data-i18n="age3b">Desde 3 anos</span>
+          <p data-i18n="congosDesc">Percusion salvaje con las manos! Ritmos tribales que hacen temblar la selva. Solo necesitas tus manitas.</p>
         </div>
         <div class="class-card">
           <span class="emoji">&#129438;&#127930;</span>
           <h3>Stego-Ukulele</h3>
-          <span class="age">Desde 4 anos</span>
-          <p>Pequeno y facil como las placas del Stegosaurus! Solo 4 cuerdas para tocar canciones completas.</p>
+          <span class="age" data-i18n="age4">Desde 4 anos</span>
+          <p data-i18n="ukeDesc">Pequeno y facil como las placas del Stegosaurus! Solo 4 cuerdas para tocar canciones completas.</p>
         </div>
         <div class="class-card">
           <span class="emoji">&#129430;&#128276;</span>
           <h3>Dino-Pandereta</h3>
-          <span class="age">Desde 3 anos</span>
-          <p>Sacude y golpea al ritmo! Perfecta para los mas pequenos. Coordinacion y ritmo desde el primer dia.</p>
+          <span class="age" data-i18n="age3c">Desde 3 anos</span>
+          <p data-i18n="tamDesc">Sacude y golpea al ritmo! Perfecta para los mas pequenos. Coordinacion y ritmo desde el primer dia.</p>
         </div>
         <div class="class-card">
           <span class="emoji">&#129429;&#127925;</span>
           <h3>Ptero-Flauta</h3>
-          <span class="age">Desde 4 anos</span>
-          <p>Sopla como el viento de un Pteranodon! Flauta dulce: facil de aprender, hermosa de escuchar.</p>
+          <span class="age" data-i18n="age4b">Desde 4 anos</span>
+          <p data-i18n="fluteDesc">Sopla como el viento de un Pteranodon! Flauta dulce: facil de aprender, hermosa de escuchar.</p>
         </div>
         <div class="class-card">
           <span class="emoji">&#129430;&#127929;</span>
           <h3>Rex-Xilofono</h3>
-          <span class="age">Desde 3 anos</span>
-          <p>Teclas de colores que suenan increible! Aprende notas musicales jugando con colores dinosauricos.</p>
+          <span class="age" data-i18n="age3d">Desde 3 anos</span>
+          <p data-i18n="xyloDesc">Teclas de colores que suenan increible! Aprende notas musicales jugando con colores dinosauricos.</p>
         </div>
       </div>
     </div>
@@ -486,8 +508,8 @@
   <!-- SOUNDBOARD -->
   <div class="page" id="page-soundboard">
     <div class="section-wrap">
-      <h2 class="section-title">Dino-Jam Soundboard</h2>
-      <p class="section-sub">Mezcla notas musicales con rugidos de dinosaurio!</p>
+      <h2 class="section-title" data-i18n="soundTitle">Dino-Jam Soundboard</h2>
+      <p class="section-sub" data-i18n="soundSub">Mezcla notas musicales con rugidos de dinosaurio!</p>
       <div class="soundboard">
         <button class="sound-pad" data-sound="dinoC" style="background:linear-gradient(135deg,#fb923c,#c2410c)">
           <span class="pad-emoji">&#129430;</span>Marimba
@@ -520,36 +542,36 @@
   <!-- SCHEDULE -->
   <div class="page" id="page-schedule">
     <div class="section-wrap">
-      <h2 class="section-title">Horarios de la Cueva</h2>
-      <p class="section-sub">Las clases ocurren en nuestra cueva musical!</p>
+      <h2 class="section-title" data-i18n="schedTitle">Horarios de la Cueva</h2>
+      <p class="section-sub" data-i18n="schedSub">Las clases ocurren en nuestra cueva musical!</p>
       <div class="sched-grid">
         <div class="sched-card">
-          <div class="sched-day">LUN</div>
+          <div class="sched-day" data-i18n="mon">LUN</div>
           <div class="sched-info"><h4>Dino-Marimba & Rex-Xilofono</h4><p>3:00 - 6:00 PM</p></div>
         </div>
         <div class="sched-card">
-          <div class="sched-day">MAR</div>
+          <div class="sched-day" data-i18n="tue">MAR</div>
           <div class="sched-info"><h4>Bronto-Congos & Pandereta</h4><p>3:00 - 6:00 PM</p></div>
         </div>
         <div class="sched-card">
-          <div class="sched-day">MIE</div>
+          <div class="sched-day" data-i18n="wed">MIE</div>
           <div class="sched-info"><h4>Stego-Ukulele</h4><p>3:00 - 6:00 PM</p></div>
         </div>
         <div class="sched-card">
-          <div class="sched-day">JUE</div>
+          <div class="sched-day" data-i18n="thu">JUE</div>
           <div class="sched-info"><h4>Ptero-Flauta</h4><p>3:00 - 6:00 PM</p></div>
         </div>
         <div class="sched-card">
-          <div class="sched-day">VIE</div>
-          <div class="sched-info"><h4>Dino-Jam Grupal (todos!)</h4><p>4:00 - 6:00 PM</p></div>
+          <div class="sched-day" data-i18n="fri">VIE</div>
+          <div class="sched-info"><h4 data-i18n="friClass">Dino-Jam Grupal (todos!)</h4><p>4:00 - 6:00 PM</p></div>
         </div>
         <div class="sched-card">
-          <div class="sched-day">SAB</div>
-          <div class="sched-info"><h4>Todas las clases</h4><p>9:00 AM - 1:00 PM</p></div>
+          <div class="sched-day" data-i18n="sat">SAB</div>
+          <div class="sched-info"><h4 data-i18n="satClass">Todas las clases</h4><p>9:00 AM - 1:00 PM</p></div>
         </div>
       </div>
       <div style="text-align:center">
-        <button class="btn-3d jungle" id="btn-reserve">Reservar Clase de Prueba</button>
+        <button class="btn-3d jungle" id="btn-reserve" data-i18n="reserveBtn">Reservar Clase de Prueba</button>
       </div>
     </div>
   </div>
@@ -557,16 +579,16 @@
   <!-- CONTACT -->
   <div class="page" id="page-contact">
     <div class="section-wrap">
-      <h2 class="section-title">Unete a la Manada</h2>
-      <p class="section-sub">Primera clase de prueba GRATIS!</p>
+      <h2 class="section-title" data-i18n="contactTitle">Unete a la Manada</h2>
+      <p class="section-sub" data-i18n="contactSub">Primera clase de prueba GRATIS!</p>
       <div class="contact-wrap">
         <form class="contact-form" onsubmit="return false">
-          <input type="text" placeholder="Nombre del pequeno dino" />
-          <input type="number" placeholder="Edad" min="3" max="18" />
-          <input type="text" placeholder="Nombre del padre/madre" />
-          <input type="tel" placeholder="Telefono" />
-          <textarea placeholder="Que instrumento quiere tocar? Tiene experiencia?"></textarea>
-          <button class="btn-3d lava" type="submit">Enviar Rugido</button>
+          <input type="text" data-i18n-ph="phName" placeholder="Nombre del pequeno dino" />
+          <input type="number" data-i18n-ph="phAge" placeholder="Edad" min="3" max="18" />
+          <input type="text" data-i18n-ph="phParent" placeholder="Nombre del padre/madre" />
+          <input type="tel" data-i18n-ph="phPhone" placeholder="Telefono" />
+          <textarea data-i18n-ph="phMsg" placeholder="Que instrumento quiere tocar? Tiene experiencia?"></textarea>
+          <button class="btn-3d lava" type="submit" data-i18n="sendBtn">Enviar Rugido</button>
         </form>
       </div>
     </div>
@@ -622,6 +644,153 @@ document.querySelectorAll('.theme-btn').forEach(btn=>{
   if(btn.dataset.theme===currentTheme)btn.classList.add('active');
   else btn.classList.remove('active');
 });
+
+// ============================================================
+// i18n TRANSLATIONS
+// ============================================================
+const i18n={
+  es:{navHome:'Inicio',navClasses:'Clases',navSound:'Dino-Jams',navSchedule:'Horarios',navContact:'Contacto',
+    tagline:'\u{1F3B5} Donde los dinosaurios hacen musica!',
+    heroDesc:'Clases de musica para ninos con el estilo mas prehistorico y divertido. Aprende instrumentos mientras exploras el mundo de los dinosaurios!',
+    exploreBtn:'Explorar Clases',
+    classesTitle:'Clases Prehistoricas',classesSub:'Cada clase combina musica real con aventura dinosaurica!',
+    age3:'Desde 3 anos',age3b:'Desde 3 anos',age3c:'Desde 3 anos',age3d:'Desde 3 anos',age4:'Desde 4 anos',age4b:'Desde 4 anos',
+    marimbaDesc:'Golpea las teclas de piedra como un T-Rex! Melodia y ritmo con baquetas prehistoricas. El instrumento mas divertido para empezar.',
+    congosDesc:'Percusion salvaje con las manos! Ritmos tribales que hacen temblar la selva. Solo necesitas tus manitas.',
+    ukeDesc:'Pequeno y facil como las placas del Stegosaurus! Solo 4 cuerdas para tocar canciones completas.',
+    tamDesc:'Sacude y golpea al ritmo! Perfecta para los mas pequenos. Coordinacion y ritmo desde el primer dia.',
+    fluteDesc:'Sopla como el viento de un Pteranodon! Flauta dulce: facil de aprender, hermosa de escuchar.',
+    xyloDesc:'Teclas de colores que suenan increible! Aprende notas musicales jugando con colores dinosauricos.',
+    soundTitle:'Dino-Jam Soundboard',soundSub:'Mezcla notas musicales con rugidos de dinosaurio!',
+    schedTitle:'Horarios de la Cueva',schedSub:'Las clases ocurren en nuestra cueva musical!',
+    mon:'LUN',tue:'MAR',wed:'MIE',thu:'JUE',fri:'VIE',sat:'SAB',
+    friClass:'Dino-Jam Grupal (todos!)',satClass:'Todas las clases',
+    reserveBtn:'Reservar Clase de Prueba',
+    contactTitle:'Unete a la Manada',contactSub:'Primera clase de prueba GRATIS!',
+    sendBtn:'Enviar Rugido',
+    phName:'Nombre del pequeno dino',phAge:'Edad',phParent:'Nombre del padre/madre',phPhone:'Telefono',phMsg:'Que instrumento quiere tocar? Tiene experiencia?',
+    settingsLang:'\u2699 Idioma',settingsLangSub:'Elige tu idioma',
+    alertSent:'Mensaje enviado! Te contactaremos pronto. ROAR!'
+  },
+  en:{navHome:'Home',navClasses:'Classes',navSound:'Dino-Jams',navSchedule:'Schedule',navContact:'Contact',
+    tagline:'\u{1F3B5} Where dinosaurs make music!',
+    heroDesc:'Music classes for kids with the most prehistoric and fun style. Learn instruments while exploring the world of dinosaurs!',
+    exploreBtn:'Explore Classes',
+    classesTitle:'Prehistoric Classes',classesSub:'Each class combines real music with dinosaur adventure!',
+    age3:'Ages 3+',age3b:'Ages 3+',age3c:'Ages 3+',age3d:'Ages 3+',age4:'Ages 4+',age4b:'Ages 4+',
+    marimbaDesc:'Hit the stone keys like a T-Rex! Melody and rhythm with prehistoric mallets. The most fun instrument to start with.',
+    congosDesc:'Wild hand percussion! Tribal rhythms that shake the jungle. You only need your little hands.',
+    ukeDesc:'Small and easy like the plates of a Stegosaurus! Just 4 strings to play complete songs.',
+    tamDesc:'Shake and hit to the beat! Perfect for the little ones. Coordination and rhythm from day one.',
+    fluteDesc:'Blow like the wind of a Pteranodon! Recorder: easy to learn, beautiful to hear.',
+    xyloDesc:'Colorful keys that sound amazing! Learn musical notes by playing with dinosaur colors.',
+    soundTitle:'Dino-Jam Soundboard',soundSub:'Mix musical notes with dinosaur roars!',
+    schedTitle:'Cave Schedule',schedSub:'Classes take place in our musical cave!',
+    mon:'MON',tue:'TUE',wed:'WED',thu:'THU',fri:'FRI',sat:'SAT',
+    friClass:'Group Dino-Jam (everyone!)',satClass:'All classes',
+    reserveBtn:'Book a Trial Class',
+    contactTitle:'Join the Pack',contactSub:'First trial class FREE!',
+    sendBtn:'Send a Roar',
+    phName:'Little dino\'s name',phAge:'Age',phParent:'Parent\'s name',phPhone:'Phone',phMsg:'What instrument do they want to play? Any experience?',
+    settingsLang:'\u2699 Language',settingsLangSub:'Choose your language',
+    alertSent:'Message sent! We\'ll contact you soon. ROAR!'
+  },
+  fr:{navHome:'Accueil',navClasses:'Cours',navSound:'Dino-Jams',navSchedule:'Horaires',navContact:'Contact',
+    tagline:'\u{1F3B5} Ou les dinosaures font de la musique!',
+    heroDesc:'Cours de musique pour enfants avec le style le plus prehistorique et amusant. Apprends des instruments en explorant le monde des dinosaures!',
+    exploreBtn:'Explorer les Cours',
+    classesTitle:'Cours Prehistoriques',classesSub:'Chaque cours combine vraie musique et aventure dinosaurienne!',
+    age3:'Des 3 ans',age3b:'Des 3 ans',age3c:'Des 3 ans',age3d:'Des 3 ans',age4:'Des 4 ans',age4b:'Des 4 ans',
+    marimbaDesc:'Frappe les touches de pierre comme un T-Rex! Melodie et rythme avec des mailloches prehistoriques. L\'instrument le plus fun pour commencer.',
+    congosDesc:'Percussion sauvage avec les mains! Rythmes tribaux qui font trembler la jungle. Tu n\'as besoin que de tes petites mains.',
+    ukeDesc:'Petit et facile comme les plaques du Stegosaure! Seulement 4 cordes pour jouer des chansons completes.',
+    tamDesc:'Secoue et frappe en rythme! Parfait pour les plus petits. Coordination et rythme des le premier jour.',
+    fluteDesc:'Souffle comme le vent d\'un Pteranodon! Flute a bec: facile a apprendre, magnifique a ecouter.',
+    xyloDesc:'Des touches colorees qui sonnent incroyable! Apprends les notes musicales en jouant avec des couleurs dinosauriques.',
+    soundTitle:'Dino-Jam Soundboard',soundSub:'Melange notes musicales et rugissements de dinosaure!',
+    schedTitle:'Horaires de la Grotte',schedSub:'Les cours ont lieu dans notre grotte musicale!',
+    mon:'LUN',tue:'MAR',wed:'MER',thu:'JEU',fri:'VEN',sat:'SAM',
+    friClass:'Dino-Jam en Groupe (tous!)',satClass:'Tous les cours',
+    reserveBtn:'Reserver un Cours d\'Essai',
+    contactTitle:'Rejoins la Meute',contactSub:'Premier cours d\'essai GRATUIT!',
+    sendBtn:'Envoyer un Rugissement',
+    phName:'Nom du petit dino',phAge:'Age',phParent:'Nom du parent',phPhone:'Telephone',phMsg:'Quel instrument veut-il jouer? A-t-il de l\'experience?',
+    settingsLang:'\u2699 Langue',settingsLangSub:'Choisis ta langue',
+    alertSent:'Message envoye! Nous te contacterons bientot. ROAR!'
+  },
+  it:{navHome:'Inizio',navClasses:'Corsi',navSound:'Dino-Jams',navSchedule:'Orari',navContact:'Contatto',
+    tagline:'\u{1F3B5} Dove i dinosauri fanno musica!',
+    heroDesc:'Lezioni di musica per bambini con lo stile piu preistorico e divertente. Impara strumenti esplorando il mondo dei dinosauri!',
+    exploreBtn:'Esplora i Corsi',
+    classesTitle:'Corsi Preistorici',classesSub:'Ogni corso combina musica reale con avventura dinosauresca!',
+    age3:'Da 3 anni',age3b:'Da 3 anni',age3c:'Da 3 anni',age3d:'Da 3 anni',age4:'Da 4 anni',age4b:'Da 4 anni',
+    marimbaDesc:'Colpisci i tasti di pietra come un T-Rex! Melodia e ritmo con bacchette preistoriche. Lo strumento piu divertente per iniziare.',
+    congosDesc:'Percussione selvaggia con le mani! Ritmi tribali che fanno tremare la giungla. Ti servono solo le tue manine.',
+    ukeDesc:'Piccolo e facile come le placche dello Stegosauro! Solo 4 corde per suonare canzoni complete.',
+    tamDesc:'Scuoti e colpisci a ritmo! Perfetto per i piu piccoli. Coordinazione e ritmo dal primo giorno.',
+    fluteDesc:'Soffia come il vento di uno Pteranodonte! Flauto dolce: facile da imparare, bellissimo da ascoltare.',
+    xyloDesc:'Tasti colorati che suonano incredibile! Impara le note musicali giocando con colori dinosaureschi.',
+    soundTitle:'Dino-Jam Soundboard',soundSub:'Mischia note musicali con ruggiti di dinosauro!',
+    schedTitle:'Orari della Grotta',schedSub:'Le lezioni si svolgono nella nostra grotta musicale!',
+    mon:'LUN',tue:'MAR',wed:'MER',thu:'GIO',fri:'VEN',sat:'SAB',
+    friClass:'Dino-Jam di Gruppo (tutti!)',satClass:'Tutti i corsi',
+    reserveBtn:'Prenota una Lezione di Prova',
+    contactTitle:'Unisciti al Branco',contactSub:'Prima lezione di prova GRATIS!',
+    sendBtn:'Invia un Ruggito',
+    phName:'Nome del piccolo dino',phAge:'Eta',phParent:'Nome del genitore',phPhone:'Telefono',phMsg:'Quale strumento vuole suonare? Ha esperienza?',
+    settingsLang:'\u2699 Lingua',settingsLangSub:'Scegli la tua lingua',
+    alertSent:'Messaggio inviato! Ti contatteremo presto. ROAR!'
+  },
+  pt:{navHome:'Inicio',navClasses:'Aulas',navSound:'Dino-Jams',navSchedule:'Horarios',navContact:'Contato',
+    tagline:'\u{1F3B5} Onde os dinossauros fazem musica!',
+    heroDesc:'Aulas de musica para criancas com o estilo mais pre-historico e divertido. Aprenda instrumentos enquanto explora o mundo dos dinossauros!',
+    exploreBtn:'Explorar Aulas',
+    classesTitle:'Aulas Pre-Historicas',classesSub:'Cada aula combina musica real com aventura dinossaurica!',
+    age3:'A partir de 3 anos',age3b:'A partir de 3 anos',age3c:'A partir de 3 anos',age3d:'A partir de 3 anos',age4:'A partir de 4 anos',age4b:'A partir de 4 anos',
+    marimbaDesc:'Bata nas teclas de pedra como um T-Rex! Melodia e ritmo com baquetas pre-historicas. O instrumento mais divertido para comecar.',
+    congosDesc:'Percussao selvagem com as maos! Ritmos tribais que fazem a selva tremer. Voce so precisa das suas maozinhas.',
+    ukeDesc:'Pequeno e facil como as placas do Estegossauro! Apenas 4 cordas para tocar musicas completas.',
+    tamDesc:'Sacuda e bata no ritmo! Perfeito para os menores. Coordenacao e ritmo desde o primeiro dia.',
+    fluteDesc:'Sopre como o vento de um Pteranodon! Flauta doce: facil de aprender, linda de ouvir.',
+    xyloDesc:'Teclas coloridas que soam incrivel! Aprenda notas musicais brincando com cores dinossauricas.',
+    soundTitle:'Dino-Jam Soundboard',soundSub:'Misture notas musicais com rugidos de dinossauro!',
+    schedTitle:'Horarios da Caverna',schedSub:'As aulas acontecem na nossa caverna musical!',
+    mon:'SEG',tue:'TER',wed:'QUA',thu:'QUI',fri:'SEX',sat:'SAB',
+    friClass:'Dino-Jam em Grupo (todos!)',satClass:'Todas as aulas',
+    reserveBtn:'Reservar Aula Experimental',
+    contactTitle:'Junte-se ao Bando',contactSub:'Primeira aula experimental GRATIS!',
+    sendBtn:'Enviar um Rugido',
+    phName:'Nome do pequeno dino',phAge:'Idade',phParent:'Nome do responsavel',phPhone:'Telefone',phMsg:'Qual instrumento quer tocar? Tem experiencia?',
+    settingsLang:'\u2699 Idioma',settingsLangSub:'Escolha seu idioma',
+    alertSent:'Mensagem enviada! Entraremos em contato em breve. ROAR!'
+  }
+};
+
+let currentLang=localStorage.getItem('dinomusic-lang')||'es';
+
+function applyLang(lang){
+  currentLang=lang;
+  localStorage.setItem('dinomusic-lang',lang);
+  document.documentElement.lang=lang;
+  const t=i18n[lang];
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key=el.dataset.i18n;
+    if(t[key])el.textContent=t[key];
+  });
+  document.querySelectorAll('[data-i18n-ph]').forEach(el=>{
+    const key=el.dataset.i18nPh;
+    if(t[key])el.placeholder=t[key];
+  });
+  document.querySelectorAll('.lang-btn').forEach(b=>b.classList.toggle('active',b.dataset.lang===lang));
+}
+
+// Language buttons
+document.querySelectorAll('.lang-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>applyLang(btn.dataset.lang));
+});
+
+// Apply saved language on load
+applyLang(currentLang);
 
 // ============================================================
 // BACKGROUND — Particles + floating bones/notes
@@ -837,7 +1006,7 @@ document.getElementById('btn-explore').addEventListener('click',function(){break
 document.getElementById('btn-reserve').addEventListener('click',function(){breakButton(this,()=>goTo('contact'))});
 document.querySelector('.contact-form').addEventListener('submit',function(e){
   e.preventDefault();const btn=this.querySelector('button');
-  breakButton(btn,()=>{alert('Mensaje enviado! Te contactaremos pronto. ROAR!');this.reset()});
+  breakButton(btn,()=>{alert(i18n[currentLang].alertSent);this.reset()});
 });
 
 // ============================================================
