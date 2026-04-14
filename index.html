@@ -473,6 +473,69 @@
     }
     .book-toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 
+    /* ===== GAME ===== */
+    .game-wrap{max-width:420px;margin:0 auto;position:relative}
+    .game-hud{
+      display:flex;justify-content:space-around;gap:8px;
+      background:rgba(0,0,0,.3);border-radius:14px;padding:10px;margin-bottom:8px;
+      border:1px solid rgba(255,255,255,.08);
+    }
+    .hud-item{display:flex;align-items:center;gap:6px;font-weight:700;font-size:clamp(14px,3.5vw,18px);color:var(--accent2)}
+    .hud-item span:first-child{font-size:clamp(18px,4vw,22px)}
+    #game-canvas{
+      display:block;width:100%;max-width:400px;height:auto;
+      border-radius:16px;background:linear-gradient(180deg,#4a7d3a 0%,#2d5a24 100%);
+      border:3px solid var(--accent-dark);
+      box-shadow:0 8px 30px rgba(0,0,0,.4);
+      touch-action:none;
+    }
+    .game-controls{
+      display:flex;gap:8px;margin-top:10px;justify-content:center;
+    }
+    .game-btn{
+      font-family:'Fredoka',sans-serif;
+      flex:1;max-width:120px;padding:14px;
+      background:linear-gradient(180deg,var(--active-top),var(--active-bot));
+      color:#fff;border:none;border-bottom:4px solid var(--active-shadow);
+      border-radius:14px;font-size:clamp(15px,4vw,20px);font-weight:700;cursor:pointer;
+      box-shadow:0 4px 0 var(--active-shadow),0 6px 14px var(--active-glow);
+      transition:all .1s ease;user-select:none;
+    }
+    .game-btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--active-shadow);border-bottom-width:1px}
+    #game-jump{flex:2;max-width:180px}
+    .game-overlay{
+      position:absolute;top:48px;left:0;right:0;bottom:56px;
+      display:flex;align-items:center;justify-content:center;
+      background:rgba(0,0,0,.7);backdrop-filter:blur(4px);
+      border-radius:16px;z-index:5;
+    }
+    .game-overlay.hidden{display:none}
+    .game-msg{text-align:center;padding:20px;max-width:300px}
+    .game-msg h3{font-size:clamp(1.4rem,5vw,2rem);color:var(--accent);margin-bottom:8px}
+    .game-msg p{color:var(--text-muted);margin-bottom:18px;font-size:clamp(.85rem,3vw,1rem)}
+
+    /* Play game button in hero */
+    .play-game-btn{
+      font-family:'Fredoka',sans-serif;
+      display:inline-flex;align-items:center;gap:10px;
+      padding:10px 22px;margin:12px auto 16px;
+      background:linear-gradient(135deg,#facc15,#fb923c,#f87171);
+      background-size:200% 200%;animation:playPulse 3s ease infinite;
+      color:#1a1208;border:none;border-bottom:4px solid #92400e;
+      border-radius:50px;font-weight:700;font-size:clamp(14px,3.5vw,17px);
+      cursor:pointer;
+      box-shadow:0 4px 0 #92400e,0 6px 20px rgba(251,146,60,.5),inset 0 2px 0 rgba(255,255,255,.3);
+      transition:all .15s ease;
+    }
+    .play-game-btn:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 6px 0 #92400e,0 10px 30px rgba(251,146,60,.7),inset 0 2px 0 rgba(255,255,255,.3)}
+    .play-game-btn:active{transform:translateY(3px);box-shadow:0 1px 0 #92400e;border-bottom-width:1px}
+    .play-game-btn .play-icon{font-size:1.2em}
+    .play-game-btn .play-dino{font-size:1.4em;animation:bounce1 1.5s infinite}
+    @keyframes playPulse{
+      0%,100%{background-position:0% 50%}
+      50%{background-position:100% 50%}
+    }
+
     /* QR SHARE POPUP */
     .qr-overlay{
       position:fixed;top:0;left:0;right:0;bottom:0;z-index:60;
@@ -753,6 +816,11 @@
         <span>&#129429;</span>
       </div>
       <h1>MAXI SCHOOL OF MUSIC</h1>
+      <button class="play-game-btn" id="play-game-hero">
+        <span class="play-icon">&#9658;</span>
+        <span data-i18n="playGame">Jugar Dino Runner</span>
+        <span class="play-dino">&#129430;</span>
+      </button>
       <div class="tagline" data-i18n="tagline">&#127925; Donde los dinosaurios hacen musica!</div>
       <p data-i18n="heroDesc">Clases de musica para ninos con el estilo mas prehistorico y divertido. Aprende instrumentos mientras exploras el mundo de los dinosaurios!</p>
       <button class="btn-3d lava" id="btn-explore" data-i18n="exploreBtn">Explorar Clases</button>
@@ -938,6 +1006,34 @@
 
   <!-- Toast -->
   <div class="book-toast" id="book-toast"></div>
+
+  <!-- DINO RUNNER GAME -->
+  <div class="page" id="page-game">
+    <div class="section-wrap">
+      <h2 class="section-title" data-i18n="gameTitle">Dino Runner</h2>
+      <p class="section-sub" data-i18n="gameSub">Corre, salta y recolecta huevos! Esquiva los obstaculos!</p>
+      <div class="game-wrap">
+        <div class="game-hud">
+          <div class="hud-item"><span>\u{1F95A}</span><span id="game-eggs">0</span></div>
+          <div class="hud-item"><span>\u{1F3C6}</span><span id="game-score">0</span></div>
+          <div class="hud-item"><span>\u{1F525}</span><span id="game-best">0</span></div>
+        </div>
+        <canvas id="game-canvas" width="400" height="500"></canvas>
+        <div class="game-controls">
+          <button class="game-btn" id="game-left">\u25C0</button>
+          <button class="game-btn" id="game-jump" data-i18n="gameJump">SALTAR</button>
+          <button class="game-btn" id="game-right">\u25B6</button>
+        </div>
+        <div class="game-overlay" id="game-overlay">
+          <div class="game-msg">
+            <h3 id="game-msg-title" data-i18n="gamePlay">\u{1F996} Dino Runner</h3>
+            <p id="game-msg-sub" data-i18n="gameInstr">Usa las flechas o desliza. Toca SALTAR para brincar.</p>
+            <button class="btn-3d lava" id="game-start" data-i18n="gameStart">JUGAR</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- CONTACT -->
   <div class="page" id="page-contact">
@@ -1401,6 +1497,7 @@ function goTo(name){
 }
 document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>breakButton(b,()=>goTo(b.dataset.page))));
 document.getElementById('btn-explore').addEventListener('click',function(){breakButton(this,()=>goTo('classes'))});
+document.getElementById('play-game-hero').addEventListener('click',function(){goTo('game')});
 document.getElementById('btn-reserve').addEventListener('click',function(){breakButton(this,()=>goTo('contact'))});
 document.querySelector('.contact-form').addEventListener('submit',function(e){
   e.preventDefault();
@@ -2111,6 +2208,350 @@ document.getElementById('cal-next').addEventListener('click',async()=>{
 
 // Initial load from Firestore
 loadBookings().then(()=>renderCalendar());
+
+// ============================================================
+// DINO RUNNER GAME (Sonic-style)
+// ============================================================
+(function(){
+  const cv=document.getElementById('game-canvas');
+  const cx=cv.getContext('2d');
+  const W=400,H=500;
+  cv.width=W;cv.height=H;
+
+  const LANES=[W*.25,W*.5,W*.75];
+  let state={
+    running:false,
+    dinoLane:1,
+    dinoY:0, // vertical offset for jump
+    vy:0,
+    onGround:true,
+    speed:4,
+    distance:0,
+    eggs:0,
+    score:0,
+    obstacles:[],
+    collectibles:[],
+    particles:[],
+    bgOffset:0,
+    flash:0,
+    combo:0,
+  };
+  let best=parseInt(localStorage.getItem('dino-runner-best')||'0');
+  document.getElementById('game-best').textContent=best;
+
+  // ---- SONIC-STYLE SOUNDS ----
+  function ring(freq1=1000,freq2=1500){
+    if(isMuted)return;
+    if(ac.state==='suspended')ac.resume();
+    const n=ac.currentTime;
+    const o=ac.createOscillator();o.type='sine';
+    o.frequency.setValueAtTime(freq1,n);
+    o.frequency.exponentialRampToValueAtTime(freq2,n+.08);
+    const g=ac.createGain();
+    g.gain.setValueAtTime(.15,n);
+    g.gain.exponentialRampToValueAtTime(.01,n+.2);
+    o.connect(g).connect(ac.dest);o.start(n);o.stop(n+.2);
+  }
+  function jumpFx(){
+    if(isMuted)return;
+    if(ac.state==='suspended')ac.resume();
+    const n=ac.currentTime;
+    const o=ac.createOscillator();o.type='square';
+    o.frequency.setValueAtTime(300,n);
+    o.frequency.exponentialRampToValueAtTime(900,n+.15);
+    const g=ac.createGain();
+    g.gain.setValueAtTime(.08,n);
+    g.gain.exponentialRampToValueAtTime(.01,n+.2);
+    o.connect(g).connect(ac.dest);o.start(n);o.stop(n+.2);
+  }
+  function hitFx(){
+    if(isMuted)return;
+    if(ac.state==='suspended')ac.resume();
+    const n=ac.currentTime;
+    // Big low thud
+    const o=ac.createOscillator();o.type='sawtooth';
+    o.frequency.setValueAtTime(180,n);
+    o.frequency.exponentialRampToValueAtTime(40,n+.3);
+    const f=ac.createBiquadFilter();f.type='lowpass';f.frequency.value=600;
+    const g=ac.createGain();g.gain.setValueAtTime(.3,n);g.gain.exponentialRampToValueAtTime(.01,n+.4);
+    o.connect(f).connect(g).connect(ac.dest);o.start(n);o.stop(n+.4);
+    // Noise crash
+    const ns=ac.createBufferSource();
+    const buf=ac.createBuffer(1,ac.sampleRate*.2,ac.sampleRate);
+    const d=buf.getChannelData(0);
+    for(let i=0;i<d.length;i++)d[i]=(Math.random()*2-1)*(1-i/d.length);
+    ns.buffer=buf;
+    const ng=ac.createGain();ng.gain.setValueAtTime(.2,n);ng.gain.exponentialRampToValueAtTime(.01,n+.2);
+    ns.connect(ng).connect(ac.dest);ns.start(n);
+  }
+  function comboFx(level){
+    if(isMuted)return;
+    if(ac.state==='suspended')ac.resume();
+    const n=ac.currentTime;
+    const freqs=[523,659,784,1047];
+    const o=ac.createOscillator();o.type='triangle';
+    o.frequency.setValueAtTime(freqs[Math.min(level,3)],n);
+    const g=ac.createGain();g.gain.setValueAtTime(.2,n);g.gain.exponentialRampToValueAtTime(.01,n+.3);
+    o.connect(g).connect(ac.dest);o.start(n);o.stop(n+.3);
+  }
+
+  // ---- DRAWING ----
+  function drawDino(x,y,size){
+    cx.save();
+    cx.translate(x,y-state.dinoY);
+    // Shadow
+    cx.fillStyle='rgba(0,0,0,.3)';
+    cx.beginPath();cx.ellipse(0,size*.5,size*.35,size*.08,0,0,Math.PI*2);cx.fill();
+    // Body
+    cx.fillStyle='#4ade80';
+    cx.beginPath();cx.ellipse(0,10,size*.28,size*.3,0,0,Math.PI*2);cx.fill();
+    // Head
+    cx.beginPath();cx.arc(size*.18,-size*.1,size*.22,0,Math.PI*2);cx.fillStyle='#4ade80';cx.fill();
+    // Eye
+    cx.fillStyle='#fff';cx.beginPath();cx.arc(size*.25,-size*.15,size*.07,0,Math.PI*2);cx.fill();
+    cx.fillStyle='#000';cx.beginPath();cx.arc(size*.27,-size*.15,size*.04,0,Math.PI*2);cx.fill();
+    // Spikes
+    cx.fillStyle='#facc15';
+    cx.beginPath();cx.moveTo(-size*.2,-size*.05);cx.lineTo(-size*.1,-size*.25);cx.lineTo(0,-size*.05);cx.fill();
+    // Legs (animated)
+    const legPhase=state.running?Math.sin(state.distance*.3):0;
+    cx.fillStyle='#16a34a';
+    cx.fillRect(-size*.15+legPhase*3,size*.2,size*.12,size*.2);
+    cx.fillRect(size*.03-legPhase*3,size*.2,size*.12,size*.2);
+    cx.restore();
+  }
+
+  function drawBg(){
+    // Scrolling ground lines
+    cx.fillStyle='#3a6d2a';
+    for(let i=0;i<5;i++){
+      const y=(state.bgOffset+i*120)%H;
+      cx.fillRect(0,y,W,4);
+    }
+    // Side jungle
+    cx.fillStyle='rgba(0,0,0,.2)';
+    for(let i=0;i<8;i++){
+      const y=(state.bgOffset*2+i*80)%(H+80)-40;
+      cx.beginPath();cx.arc(20,y,30,0,Math.PI*2);cx.fill();
+      cx.beginPath();cx.arc(W-20,y+40,28,0,Math.PI*2);cx.fill();
+    }
+    // Lane dividers
+    cx.strokeStyle='rgba(255,255,255,.15)';cx.lineWidth=2;cx.setLineDash([10,10]);
+    cx.beginPath();cx.moveTo(W/3,0);cx.lineTo(W/3,H);cx.stroke();
+    cx.beginPath();cx.moveTo(2*W/3,0);cx.lineTo(2*W/3,H);cx.stroke();
+    cx.setLineDash([]);
+  }
+
+  function drawObstacle(o){
+    cx.save();cx.translate(o.x,o.y);
+    // Rock obstacle
+    cx.fillStyle='#7c6f5b';
+    cx.beginPath();
+    cx.moveTo(-20,15);cx.lineTo(-15,-20);cx.lineTo(10,-25);cx.lineTo(22,-5);cx.lineTo(18,18);cx.closePath();
+    cx.fill();
+    cx.fillStyle='#a0937a';
+    cx.beginPath();cx.arc(-5,-10,6,0,Math.PI*2);cx.fill();
+    cx.restore();
+  }
+
+  function drawEgg(e){
+    cx.save();cx.translate(e.x,e.y);
+    const pulse=1+Math.sin(Date.now()*.008+e.x)*.1;
+    cx.scale(pulse,pulse);
+    // Glow
+    const g=cx.createRadialGradient(0,0,0,0,0,20);
+    g.addColorStop(0,'rgba(250,204,21,.6)');g.addColorStop(1,'transparent');
+    cx.fillStyle=g;cx.fillRect(-20,-20,40,40);
+    // Egg
+    cx.fillStyle='#fde68a';
+    cx.beginPath();cx.ellipse(0,0,10,13,0,0,Math.PI*2);cx.fill();
+    // Spots
+    cx.fillStyle='#fb923c';
+    cx.beginPath();cx.arc(-3,-3,2.5,0,Math.PI*2);cx.fill();
+    cx.beginPath();cx.arc(3,3,2,0,Math.PI*2);cx.fill();
+    cx.restore();
+  }
+
+  function drawParticles(){
+    state.particles.forEach(p=>{
+      p.life-=1;p.x+=p.vx;p.y+=p.vy;p.vy+=.3;
+      cx.fillStyle=p.color;
+      cx.globalAlpha=Math.max(0,p.life/30);
+      cx.beginPath();cx.arc(p.x,p.y,p.size,0,Math.PI*2);cx.fill();
+      cx.globalAlpha=1;
+    });
+    state.particles=state.particles.filter(p=>p.life>0);
+  }
+
+  function spawn(){
+    if(Math.random()<.025+state.speed*.002){
+      const lane=Math.floor(Math.random()*3);
+      state.obstacles.push({x:LANES[lane],y:-30,lane});
+    }
+    if(Math.random()<.04){
+      const lane=Math.floor(Math.random()*3);
+      state.collectibles.push({x:LANES[lane],y:-20,lane,taken:false});
+    }
+  }
+
+  function reset(){
+    state.dinoLane=1;state.dinoY=0;state.vy=0;state.onGround=true;
+    state.speed=4;state.distance=0;state.eggs=0;state.score=0;
+    state.obstacles=[];state.collectibles=[];state.particles=[];
+    state.combo=0;state.flash=0;
+    updateHud();
+  }
+
+  function updateHud(){
+    document.getElementById('game-eggs').textContent=state.eggs;
+    document.getElementById('game-score').textContent=state.score;
+  }
+
+  function jump(){
+    if(!state.running||!state.onGround)return;
+    state.vy=-14;state.onGround=false;
+    jumpFx();
+  }
+
+  function moveLane(dir){
+    if(!state.running)return;
+    state.dinoLane=Math.max(0,Math.min(2,state.dinoLane+dir));
+    // whoosh sound
+    if(!isMuted){
+      if(ac.state==='suspended')ac.resume();
+      const n=ac.currentTime;
+      const o=ac.createOscillator();o.type='sine';
+      o.frequency.setValueAtTime(600,n);o.frequency.exponentialRampToValueAtTime(200,n+.1);
+      const g=ac.createGain();g.gain.setValueAtTime(.05,n);g.gain.exponentialRampToValueAtTime(.01,n+.15);
+      o.connect(g).connect(ac.dest);o.start(n);o.stop(n+.15);
+    }
+  }
+
+  function tick(){
+    if(!state.running)return;
+    // Physics
+    state.vy+=.8;
+    state.dinoY-=state.vy;
+    if(state.dinoY<=0){state.dinoY=0;state.vy=0;state.onGround=true}
+
+    // Movement
+    state.distance+=state.speed;
+    state.bgOffset=(state.bgOffset+state.speed)%H;
+    state.speed=Math.min(9,4+state.distance*.0005);
+
+    // Spawn
+    spawn();
+
+    // Update objects
+    state.obstacles.forEach(o=>o.y+=state.speed);
+    state.collectibles.forEach(e=>e.y+=state.speed);
+    state.obstacles=state.obstacles.filter(o=>o.y<H+40);
+    state.collectibles=state.collectibles.filter(e=>e.y<H+40&&!e.taken);
+
+    // Dino position
+    const dinoX=LANES[state.dinoLane];
+    const dinoY=H-80;
+
+    // Collision
+    state.obstacles.forEach(o=>{
+      if(Math.abs(o.x-dinoX)<40&&Math.abs(o.y-dinoY+state.dinoY)<30&&state.dinoY<40){
+        gameOver();
+      }
+    });
+    state.collectibles.forEach(e=>{
+      if(!e.taken&&Math.abs(e.x-dinoX)<30&&Math.abs(e.y-dinoY+state.dinoY)<35){
+        e.taken=true;
+        state.eggs++;state.combo++;
+        state.score+=10*Math.min(state.combo,5);
+        ring(800+state.combo*100,1200+state.combo*100);
+        if(state.combo>2)comboFx(state.combo-2);
+        // Particles
+        for(let i=0;i<8;i++){
+          state.particles.push({
+            x:e.x,y:e.y,
+            vx:(Math.random()-.5)*6,vy:-Math.random()*5,
+            life:30,size:3+Math.random()*3,
+            color:['#facc15','#fb923c','#fde68a'][0|Math.random()*3]
+          });
+        }
+        updateHud();
+      }
+    });
+
+    // Score from distance
+    if(state.distance%30===0){state.score+=1;updateHud()}
+    // Reset combo if no egg collected recently
+    if(state.distance%150===0)state.combo=Math.max(0,state.combo-1);
+
+    // Render
+    cx.clearRect(0,0,W,H);
+    drawBg();
+    state.obstacles.forEach(drawObstacle);
+    state.collectibles.forEach(drawEgg);
+    drawDino(dinoX,dinoY,60);
+    drawParticles();
+
+    // Flash on hit
+    if(state.flash>0){
+      cx.fillStyle=`rgba(255,0,0,${state.flash})`;
+      cx.fillRect(0,0,W,H);
+      state.flash-=.05;
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  function gameOver(){
+    state.running=false;
+    state.flash=.6;
+    hitFx();
+    if(state.score>best){best=state.score;localStorage.setItem('dino-runner-best',best);document.getElementById('game-best').textContent=best;}
+    const ov=document.getElementById('game-overlay');
+    ov.classList.remove('hidden');
+    document.getElementById('game-msg-title').textContent='\u{1F6A8} Game Over!';
+    document.getElementById('game-msg-sub').textContent='Huevos: '+state.eggs+' | Puntos: '+state.score;
+    document.getElementById('game-start').textContent='JUGAR DE NUEVO';
+  }
+
+  function start(){
+    reset();
+    state.running=true;
+    document.getElementById('game-overlay').classList.add('hidden');
+    tick();
+  }
+
+  document.getElementById('game-start').addEventListener('click',start);
+  document.getElementById('game-left').addEventListener('click',()=>moveLane(-1));
+  document.getElementById('game-right').addEventListener('click',()=>moveLane(1));
+  document.getElementById('game-jump').addEventListener('click',jump);
+
+  // Keyboard
+  document.addEventListener('keydown',(e)=>{
+    if(document.getElementById('page-game').classList.contains('active')){
+      if(e.key==='ArrowLeft')moveLane(-1);
+      if(e.key==='ArrowRight')moveLane(1);
+      if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();jump()}
+    }
+  });
+
+  // Touch swipe
+  let tx=0,ty=0;
+  cv.addEventListener('touchstart',(e)=>{
+    tx=e.touches[0].clientX;ty=e.touches[0].clientY;
+  },{passive:true});
+  cv.addEventListener('touchend',(e)=>{
+    const dx=e.changedTouches[0].clientX-tx;
+    const dy=e.changedTouches[0].clientY-ty;
+    if(Math.abs(dx)>Math.abs(dy)){
+      if(dx>30)moveLane(1);else if(dx<-30)moveLane(-1);
+    } else if(dy<-30){jump()}
+  },{passive:true});
+
+  // Initial draw
+  cx.clearRect(0,0,W,H);
+  drawBg();
+  drawDino(LANES[1],H-80,60);
+})();
 </script>
 </body>
 </html>
