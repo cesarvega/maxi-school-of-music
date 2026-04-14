@@ -319,10 +319,20 @@
       border:none;border-bottom:5px solid var(--fab-shadow);
       font-size:clamp(24px,6vw,32px);cursor:pointer;
       box-shadow:0 5px 0 var(--fab-shadow),0 8px 25px var(--fab-glow),inset 0 2px 0 rgba(255,255,255,.15);
-      transition:all .15s ease;display:flex;align-items:center;justify-content:center;transform:translateY(0);
+      transition:left 1.5s cubic-bezier(.4,0,.2,1), bottom .15s ease, box-shadow .15s ease, border-bottom-width .15s ease;
+      display:flex;align-items:center;justify-content:center;
     }
-    .roar-fab:hover{transform:translateY(-3px);box-shadow:0 8px 0 var(--fab-shadow),0 10px 30px var(--fab-glow),inset 0 2px 0 rgba(255,255,255,.15)}
-    .roar-fab:active{transform:translateY(4px);box-shadow:0 1px 0 var(--fab-shadow),0 2px 6px var(--fab-glow);border-bottom-width:1px}
+    .roar-fab:hover{box-shadow:0 8px 0 var(--fab-shadow),0 10px 30px var(--fab-glow),inset 0 2px 0 rgba(255,255,255,.15)}
+    .roar-fab:active{box-shadow:0 1px 0 var(--fab-shadow),0 2px 6px var(--fab-glow);border-bottom-width:1px}
+    .roar-fab.jumping{animation:dinoJump .45s cubic-bezier(.3,0,.2,1)}
+    @keyframes dinoJump{
+      0%{transform:translateY(0) scaleX(1) scaleY(1)}
+      15%{transform:translateY(4px) scaleX(1.15) scaleY(.85)}
+      40%{transform:translateY(-45px) scaleX(.9) scaleY(1.1)}
+      55%{transform:translateY(-48px) scaleX(.95) scaleY(1.05)}
+      80%{transform:translateY(3px) scaleX(1.1) scaleY(.9)}
+      100%{transform:translateY(0) scaleX(1) scaleY(1)}
+    }
 
     /* EFFECTS */
     .break-half{position:fixed;pointer-events:none;z-index:9999;overflow:hidden}
@@ -1203,6 +1213,65 @@ document.getElementById('roar-fab').addEventListener('click',function(e){
     document.body.style.animation='shake .4s ease';
   });
 });
+
+// ============================================================
+// DINO WANDERING + SPORADIC JUMP
+// ============================================================
+(function(){
+  const dino=document.getElementById('roar-fab');
+  const fabSize=68; // max size
+  let wanderDir=1; // 1=right, -1=left
+  let posX=16; // current left position in px
+
+  // Nintendo-style jump sound (very soft)
+  function playJumpSound(){
+    if(ac.state==='suspended') ac.resume();
+    const now=ac.currentTime;
+    // Rising sine sweep — classic 8-bit jump
+    const osc=ac.createOscillator();
+    osc.type='square';
+    osc.frequency.setValueAtTime(250,now);
+    osc.frequency.exponentialRampToValueAtTime(800,now+.12);
+    osc.frequency.exponentialRampToValueAtTime(600,now+.18);
+    const g=ac.createGain();
+    g.gain.setValueAtTime(.06,now); // very soft
+    g.gain.linearRampToValueAtTime(.04,now+.1);
+    g.gain.exponentialRampToValueAtTime(.001,now+.22);
+    osc.connect(g).connect(ac.destination);
+    osc.start(now);osc.stop(now+.22);
+  }
+
+  // Random wander every 1.5-3s
+  function wander(){
+    const maxX=window.innerWidth-fabSize-16;
+    // Random step 30-120px
+    const step=30+Math.random()*90;
+    // Occasionally flip direction
+    if(Math.random()<.3) wanderDir*=-1;
+    posX+=step*wanderDir;
+    // Clamp
+    if(posX>maxX){posX=maxX;wanderDir=-1}
+    if(posX<16){posX=16;wanderDir=1}
+    dino.style.left=posX+'px';
+    // Schedule next wander
+    setTimeout(wander,1500+Math.random()*2000);
+  }
+  setTimeout(wander,2000);
+
+  // Sporadic jump every 4-10s
+  function scheduleJump(){
+    const delay=4000+Math.random()*6000;
+    setTimeout(()=>{
+      if(!dino.classList.contains('jumping')&&dino.dataset.breaking!=='true'){
+        dino.classList.add('jumping');
+        playJumpSound();
+        setTimeout(()=>dino.classList.remove('jumping'),450);
+      }
+      scheduleJump();
+    },delay);
+  }
+  scheduleJump();
+})();
 
 // ============================================================
 // BOOKING CALENDAR SYSTEM
